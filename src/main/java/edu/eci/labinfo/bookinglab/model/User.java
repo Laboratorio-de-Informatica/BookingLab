@@ -28,7 +28,7 @@ public class User {
     private Long userId;
 
     private String fullName;
-    private String username;
+    private String userName;
     private Role role;
     private String password;
     

@@ -12,20 +12,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Entity
+@NoArgsConstructor
+@ToString
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Laboratory {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long labId;
+    private String laboratoryName;
+    private int availableComputers;
+    
 
-    protected String laboratoryName;
-    protected int availableComputers;
 }
