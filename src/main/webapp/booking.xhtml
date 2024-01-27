@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:p="http://primefaces.org/ui"
+    template="/template.xhtml">
+    <ui:define name="content"> 
+        <div class="flex p-8 align-items-center flex-column">
+
+
+            <div id="reservation" class="surface-section">
+                <div class="font-medium text-3xl text-900 mb-3">Información de Reserva</div>
+                <div class="text-500 mb-5">Ingrese los datos para crear una reserva.</div>
+                <ul class="list-none p-0 m-0">
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <p:outputLabel for="teacher" value="Profesor" styleClass="text-500 w-6 md:w-2 font-medium" />
+                        <p:inputText id="teacher" placeholder="Nombre" required="true"/>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <p:outputLabel for="laboratory" value="Laboratorio" styleClass="text-500 w-6 md:w-2 font-medium"/>
+                        <p:selectOneMenu id="laboratory" required="true">
+                            <f:selectItem itemLabel="Seleccionar Laboratorio" itemValue=""/>
+                            <f:selectItem itemLabel="Software" itemValue="1"/>
+                            <f:selectItem itemLabel="Redes" itemValue="2"/>
+                            <f:selectItem itemLabel="Plataformas" itemValue="3"/>
+                            <f:selectItem itemLabel="Multimedia" itemValue="4"/>
+                            <f:selectItem itemLabel="EDFI" itemValue="5"/>
+                            <f:selectItem itemLabel="Interactiva" itemValue="6"/>
+                            <f:selectItem itemLabel="Fundamentos" itemValue="7"/>
+                            <f:selectItem itemLabel="VideoJuegos" itemValue="8"/>
+                        </p:selectOneMenu>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <p:outputLabel value="Repetir" styleClass="text-500 w-6 md:w-2 font-medium" />
+                        <p:commandButton value="Mostrar Sección" update="seccionARenderizar" process="@this seccionARenderizar"
+                        actionListener="#{durationController.mostrarOcultarSeccion}" rendered="#{durationController.mostrarSeccion}"/>
+                        <!-- Sección que se renderizará solo cuando se haga clic en el botón -->
+                        <p:outputPanel id="seccionARenderizar" rendered="#{true}">
+                            <p:selectOneRadio id="page" value="#Option1" layout="pageDirection">
+                                <f:selectItem itemLabel="No repetir" itemValue="Option1" itemDisabled="#{true}"/>
+                                <f:selectItem itemLabel="Cada _ día(s)" itemValue="Option2"/>
+                                <f:selectItem itemLabel="Cada _ semana(s)" itemValue="Option3"/>
+                            </p:selectOneRadio>
+                            <p:spinner id="horizontalAfter" value="#{spinnerView.number9}" buttons="horizontal-after"
+                           upButtonStyleClass="ui-button-success" downButtonStyleClass="ui-button-danger"/>
+                            <!-- Contenido de la sección -->
+                        </p:outputPanel>
+                       
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <p:outputLabel for="slot" value="Espacio de hora" styleClass="text-500 w-6 md:w-2 font-medium" />
+                        <p:selectManyButton id="slot" 
+                                            styleClass="flex justify-content-between" required="true">
+                            <f:selectItem itemLabel="7:00 - 8:30" itemValue="Option 1"/>
+                            <f:selectItem itemLabel="8:30 - 10:00" itemValue="Option 2"/>
+                            <f:selectItem itemLabel="10:00 - 11:30" itemValue="Option 3"/>
+                            <f:selectItem itemLabel="11:30 - 1:00" itemValue="Option 4"/>
+                            <f:selectItem itemLabel="1:00 - 2:30" itemValue="Option 5"/>
+                            <f:selectItem itemLabel="2:30 - 4:00" itemValue="Option 6"/>
+                            <f:selectItem itemLabel="4:00 - 5:30" itemValue="Option 7"/>
+                            <f:selectItem itemLabel="5:30 - 7:00" itemValue="Option 8"/>
+                        </p:selectManyButton>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <p:outputLabel for="observation" value="Observaciones" styleClass="text-500 w-6 md:w-2 font-medium" />
+                        <div class="flex flex-column gap-2">
+                            <p:inputTextarea id="observation" rows="5" cols="30" counter="characters" maxlength="500"
+                                             counterTemplate="{0} caracteres restantes"/>
+                            <h:outputText id="characters" class="block" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <p:commandButton value="Reservar" process="@this" 
+            styleClass="btn-link ui-button-raised ui-button-success" />
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,11 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/template.xhtml">
+    <ui:define name="content">
+
+        <div class="grid grid-nogutter surface-section text-800">
+            <div class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center">
+                <section>
+                    <p:graphicImage library="img" name="logo.png" alt="logo"/>
+                    <p class="text-5xl text-green-600 font-bold mb-6 mt-6">Reservas de Laboratorios para Clases</p>
+
+                    <p:linkButton value="Iniciar Reserva" outcome="booking.xhtml"
+                                  styleClass="btn-link mr-3 ui-button-raised ui-button-success" />
+                    <p:linkButton value="Cancelar Reserva" 
+                                  styleClass="btn-link mr-3 ui-button-raised ui-button-danger "/>  
+                    <p:linkButton value="Consultar Reserva" outcome="consult.xhtml"
+                                  styleClass="btn-link ui-button-raised ui-button-secondary"/>  
+                </section>
+            </div>
+            <div class="col-12 md:col-6 overflow-hidden">
+                <p:graphicImage library="img" name="illustration.jpeg" alt="illustration"
+                                styleClass="md:ml-auto block md:h-screen"
+                                style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)"/>
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>
