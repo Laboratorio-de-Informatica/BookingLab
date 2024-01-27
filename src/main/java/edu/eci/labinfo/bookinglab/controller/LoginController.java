@@ -62,7 +62,7 @@ public class LoginController {
             PrimeFaces.current().ajax().update(LOGIN_FORM_MESSAGES);
             return false;
         }
-        // Si el usuario está autenticado, redirigirlo a la página correspondiente
+        //Si el usuario está autenticado, redirigirlo a la página correspondiente
         try {
             password = null;
             ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
