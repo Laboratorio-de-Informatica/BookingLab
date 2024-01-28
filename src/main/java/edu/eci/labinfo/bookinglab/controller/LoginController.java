@@ -1,8 +1,6 @@
 package edu.eci.labinfo.bookinglab.controller;
 
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
-
 import edu.eci.labinfo.bookinglab.model.BookingLabException;
 import edu.eci.labinfo.bookinglab.model.User;
 import edu.eci.labinfo.bookinglab.service.UserService;
@@ -49,7 +46,7 @@ public class LoginController {
         // Verificar que se ingresó un nombre de usuario y una contraseña
         if (password == null || userName == null) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, BookingLabException.INCOMPLETE_FIELDS, ERROR));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, BookingLabException.INCOMPLETE_FIELDS));
             PrimeFaces.current().ajax().update(LOGIN_FORM_MESSAGES);
             return false;
         }
@@ -58,7 +55,7 @@ public class LoginController {
         // Si el usuario no existe o la contraseña es incorrecta, mostrar un mensaje de error y salir temprano
         if (userToLogin == null  || !passwordEncoder.matches(password, userToLogin.getPassword())) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, BookingLabException.CREDENTIALS_INCORRECT, ERROR));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, BookingLabException.CREDENTIALS_INCORRECT));
             PrimeFaces.current().ajax().update(LOGIN_FORM_MESSAGES);
             return false;
         }

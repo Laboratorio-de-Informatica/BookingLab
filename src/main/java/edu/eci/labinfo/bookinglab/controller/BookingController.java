@@ -1,5 +1,6 @@
 package edu.eci.labinfo.bookinglab.controller;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import lombok.Data;
 
@@ -59,9 +62,21 @@ public class BookingController {
         logger.info("Evento agregado");
     }
 
-     public void onEventDelete() {
+    public void onEventDelete() {
         eventModel.deleteEvent(event);
         logger.info("Evento eliminado");
     }
-    
+
+    public void saveReservation() {
+        logger.info("Reserva guardada");
+        // TODO implementar logica para guardar la reserva
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        String redirectPath = "index.xhtml";
+        try {
+            ec.redirect(ec.getRequestContextPath() + redirectPath);
+        } catch (IOException e) {
+            logger.error("Error al redirigir a la pagina de inicio");
+        }
+    }
+
 }
