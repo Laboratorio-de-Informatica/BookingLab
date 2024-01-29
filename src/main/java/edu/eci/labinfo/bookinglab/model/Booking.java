@@ -1,17 +1,14 @@
 package edu.eci.labinfo.bookinglab.model;
 
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,13 +22,13 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
-@Data
-public class Laboratory {
-    @Id
-    private String laboratoryName;
-    private int availableComputers;
+public class Booking {
 
+    @Id
+    private Long booking_id;
+    private Calendar Calendar = new GregorianCalendar();
+    
     @OneToMany(mappedBy = "reservation")
     private List<Reservation> reservations;
-    
+
 }
