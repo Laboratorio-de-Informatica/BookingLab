@@ -13,5 +13,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Optional<Reservation> findByInitialDateTime(LocalDateTime initialDateTime);
     Optional<Reservation> findByInitialDateTimeAndEndDateTime(LocalDateTime initialDateTime, LocalDateTime endDateTime);
+    Optional<Reservation> findByProfessor(String professor);
 
 }

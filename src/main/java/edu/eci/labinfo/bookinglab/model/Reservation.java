@@ -20,11 +20,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Data
 @EqualsAndHashCode
 @Entity
 public class Reservation {

@@ -1,5 +1,8 @@
 package edu.eci.labinfo.bookinglab.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.eci.labinfo.bookinglab.data.ReservationRepository;
@@ -20,6 +23,35 @@ public class ReservationService {
                 .isEmpty()) {
             throw new BookingLabException(BookingLabException.DATE_ALREADY_TAKEN);
         }
+        reservation = nameFormatter(reservation);
         return reservationRepository.save(reservation);
     }
+
+    private Reservation nameFormatter(Reservation reservation){
+        String name = reservation.getProfessor();
+        reservation.setProfessor(name.toUpperCase());
+        return reservation;
+    }
+
+    public List<Reservation> getAllReservations(){
+        return reservationRepository.findAll();
+    }
+
+    public Optional<Reservation> getReservationById(Long id){
+        return reservationRepository.findById(id);
+    }
+
+    public Optional<Reservation> getReservationByProfessor(String professorName){
+        return reservationRepository.findByProfessor(professorName);
+    }
+
+    public Optional<Reservation> getReservationByLaboratory(String labname){
+        return reservationRepository.findByBLaboratory(labname);
+    }
+
+    public Reservation updateReservation(Reservation reservation)throws BookingLabException{
+        return null;
+    }
+
+
 }
