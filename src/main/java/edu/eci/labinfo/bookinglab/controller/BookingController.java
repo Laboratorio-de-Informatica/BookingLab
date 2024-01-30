@@ -1,7 +1,9 @@
 package edu.eci.labinfo.bookinglab.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 
 import org.primefaces.event.SelectEvent;
@@ -11,6 +13,7 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
@@ -27,6 +30,11 @@ public class BookingController {
     private ScheduleModel eventModel;
     private String serverTimeZone;
     private ScheduleEvent<?> event;
+    private static LocalDate date = LocalDate.now();
+    private static LocalTime timeam = LocalTime.of(7,0);
+    private static LocalTime timepm = LocalTime.of(19,0);
+    public  final LocalDateTime mindate = LocalDateTime.of(date, timeam);
+    public  final LocalDateTime maxdate = LocalDateTime.of(date, timepm);
     Logger logger;
 
     @PostConstruct

@@ -31,14 +31,13 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idReservation;
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
-
+    private String professor;
+    private String course;
+    
     @ManyToOne
     @JoinColumn(name = "laboratoryName")
     private Laboratory bLaboratory;
 
     private LocalDateTime initialDateTime;
-    private LocalDate endDateTime;
+    private LocalDateTime endDateTime;
 }

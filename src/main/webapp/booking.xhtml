@@ -37,12 +37,12 @@
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <p:outputLabel for="timeslotmin" value="Hora inicial" styleClass="text-500 w-6 md:w-2 font-medium" />
                         <p:datePicker id="timeslotmin"
-                            timeOnly="true" pattern="HH:mm a" hourFormat="12" required="true"/>
+                        mindate="#{bookingController.mindate}" maxdate="#{bookingController.maxdate}" timeOnly="true" pattern="HH:mm a" hourFormat="12" required="true"/>
                     </li>
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <p:outputLabel for="timeslotmax" value="Hora final" styleClass="text-500 w-6 md:w-2 font-medium" />
                         <p:datePicker id="timeslotmax"
-                            timeOnly="true" pattern="HH:mm a" hourFormat="12" required="true" />
+                            mindate="#{bookingController.mindate}" maxdate="#{bookingController.maxdate}"  timeOnly="true" pattern="HH:mm a" hourFormat="12" required="true" />
                     </li>
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <p:outputLabel for="observation" value="Observaciones" styleClass="text-500 w-6 md:w-2 font-medium" />

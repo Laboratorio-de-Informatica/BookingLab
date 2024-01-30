@@ -20,10 +20,6 @@ import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
-@ToString
-@Getter
-@Setter
-@EqualsAndHashCode
 @AllArgsConstructor
 @Data
 public class Laboratory {

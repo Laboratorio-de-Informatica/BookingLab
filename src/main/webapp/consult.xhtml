@@ -1,21 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition
-    xmlns:ui="jakarta.faces.facelets"
-    xmlns:f="jakarta.faces.core"
-    xmlns:h="jakarta.faces.html"
-    xmlns:p="http://primefaces.org/ui"
-    template="/template.xhtml">
-    <ui:define name="content"> 
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:f="jakarta.faces.core" xmlns:h="jakarta.faces.html"
+    xmlns:p="http://primefaces.org/ui" template="/template.xhtml">
+    <ui:define name="content">
         <div class="p-8 flex justify-content-center flex-column">
-            
-            <p:schedule id="schedule" value="#{bookingController.eventModel}" widgetVar="bookinglabschedule" view="timeGridWeek" locale="es_CO"
-                        slotDuration="01:30:00" minTime="07:00:00" maxTime="19:00:00" height="auto" styleClass="schedule" allDaySlot="false" tooltip="true"
-                        columnHeaderFormat="timeGridWeek: {weekday: 'long', day: 'numeric', omitCommas: true}" extender="window.ExtenderShowcase"
-                        timeZone="#{bookingController.serverTimeZone}" clientTimeZone="#{bookingController.serverTimeZone}">
-            </p:schedule>
 
-            <p:linkButton value="Regresar" outcome="index.xhtml"styleClass="btn-link ui-button-raised ui-button-secondary mt-5"/>  
+            <p:schedule id="schedule" value="#{bookingController.eventModel}" widgetVar="bookinglabschedule"
+                view="timeGridWeek" locale="es_CO" slotDuration="01:30:00" minTime="07:00:00" maxTime="19:00:00"
+                height="auto" styleClass="schedule" allDaySlot="false" tooltip="true"
+                columnHeaderFormat="timeGridWeek: {weekday: 'long', day: 'numeric', omitCommas: true}"
+                extender="window.ExtenderShowcase" timeZone="#{bookingController.serverTimeZone}"
+                clientTimeZone="#{bookingController.serverTimeZone}">
+                <p:ajax event="dateSelect" listener="#{bookingController.onDateSelect}" update="eventDetails"
+                    oncomplete="PF('eventDialog').show();" />
+                <p:ajax event="eventSelect" listener="#{bookingController.onEventSelect}" update="eventDetails"
+                    oncomplete="PF('eventDialog').show();" />
+            </p:schedule>
+            <p:dialog widgetVar="eventDialog" header="Detalle de reserva">
+
+                <h:panelGrid id="eventDetails" columns="2">
+                    <p:linkButton value="Regresar" outcome="index.xhtml"
+                        styleClass="btn-link ui-button-raised ui-button-secondary mt-5" />
+                    <p:outputLabel for="subject" value="Clase:" />
+                    <p:inputText id="subject" value="#{bookingController.event.title}" required="true"
+                        placeholder="Asignatura-Grupo" />
+                    <p:outputLabel for="teacher" value="Profesor" />
+                    <p:inputText id="teacher" placeholder="Nombre" required="true" />
+                    <p:outputLabel for="observation" value="Observación:" />
+                    <div class="flex flex-column">
+                        <p:inputTextarea id="observation" rows="5" cols="30" counter="characters" maxlength="300"
+                            placeholder="Observaciones" counterTemplate="{0} caracteres restantes"
+                            value="#{bookingController.event.description}" />
+                        <h:outputText id="characters" class="block" />
+                    </div>
+                    <p:outputLabel for="from" value="Inicio:" />
+                    <p:datePicker id="from" value="#{bookingController.event.startDate}" pattern="dd/MM/yyyy"
+                        showTime="true" hourFormat="12" stepMinute="30" />
+                    <p:outputLabel for="to" value="Fin:" />
+                    <p:datePicker id="to" value="#{bookingController.event.endDate}" pattern="dd/MM/yyyy"
+                        showTime="true" hourFormat="12" stepMinute="30" />
+                </h:panelGrid>
+                <div class="flex justify-content-between mt-3">
+                    <p:commandButton type="reset" value="Restablecer" styleClass="font-bold ui-button-outlined" />
+                    <p:commandButton value="Eliminar" styleClass="ui-button-danger"
+                        actionListener="#{bookingController.onEventDelete}" process="@this"
+                        oncomplete="PF('bookinglabschedule').update();PF('eventDialog').hide();">
+                    </p:commandButton>
+                    <p:commandButton type="submit" value="Guardar" action="#{bookingController.addEvent}"
+                        oncomplete="PF('bookinglabschedule').update();PF('eventDialog').hide();" />
+                </div>
+            </p:dialog>
+
+            <p:linkButton value="Regresar" outcome="index.xhtml"
+                styleClass="btn-link ui-button-raised ui-button-secondary mt-5" />
         </div>
     </ui:define>
 </ui:composition>
