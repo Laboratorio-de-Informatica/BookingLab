@@ -31,7 +31,7 @@ public class Laboratory {
     private String laboratoryName;
     private int availableComputers;
 
-    @OneToMany(mappedBy = "reservation")
+    @OneToMany(mappedBy = "bLaboratory")
     private List<Reservation> reservations;
     
 }

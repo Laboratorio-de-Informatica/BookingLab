@@ -28,7 +28,7 @@ public class Booking {
     private Long booking_id;
     private Calendar Calendar = new GregorianCalendar();
     
-    @OneToMany(mappedBy = "reservation")
+    @OneToMany(mappedBy = "idReservation")
     private List<Reservation> reservations;
 
 }
