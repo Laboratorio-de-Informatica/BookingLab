@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import edu.eci.labinfo.bookinglab.data.ReservationRepository;
 import edu.eci.labinfo.bookinglab.model.BookingLabException;
 import edu.eci.labinfo.bookinglab.model.Reservation;
 
+@Service
 public class ReservationService {
 
     @Autowired
@@ -27,31 +29,43 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    private Reservation nameFormatter(Reservation reservation){
+    private Reservation nameFormatter(Reservation reservation) {
         String name = reservation.getProfessor();
         reservation.setProfessor(name.toUpperCase());
         return reservation;
     }
 
-    public List<Reservation> getAllReservations(){
+    public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
     }
 
-    public Optional<Reservation> getReservationById(Long id){
+    public Optional<Reservation> getReservationById(Long id) {
         return reservationRepository.findById(id);
     }
 
-    public Optional<Reservation> getReservationByProfessor(String professorName){
-        return reservationRepository.findByProfessor(professorName);
+    public Optional<Reservation> getReservationByProfessor(String professorName) {
+        return reservationRepository.findByProfessor(professorName.toUpperCase());
     }
 
-    public Optional<Reservation> getReservationByLaboratory(String labname){
+    /* public Optional<Reservation> getReservationByLaboratory(String labname) {
         return reservationRepository.findByBLaboratory(labname);
-    }
+    } */
 
-    public Reservation updateReservation(Reservation reservation)throws BookingLabException{
-        return null;
-    }
+    public Reservation updateReservation(Reservation reservation) throws BookingLabException {
+        if (reservationRepository.findById(reservation.getIdReservation()).isEmpty()) {
+            throw new BookingLabException(BookingLabException.RESERVATION_NOT_FOUND);
+        }
+        Optional<Reservation> conflictingReservation = reservationRepository.findByInitialDateTimeAndEndDateTime(
+                reservation.getInitialDateTime(),
+                reservation.getEndDateTime()
+        );
 
+        if (conflictingReservation.isPresent() && !conflictingReservation.get().getIdReservation().equals(reservation.getIdReservation())) {
+            throw new BookingLabException(BookingLabException.DATE_ALREADY_TAKEN);
+        }
+
+        reservation = nameFormatter(reservation);
+        return reservationRepository.save(reservation);
+    }
 
 }

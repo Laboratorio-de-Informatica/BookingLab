@@ -29,5 +29,12 @@ public class Laboratory {
 
     @OneToMany(mappedBy = "bLaboratory")
     private List<Reservation> reservations;
+
+    public Laboratory(String laboratoryName, int availableComputers) {
+        this.laboratoryName = laboratoryName;
+        this.availableComputers = availableComputers;
+    }
+
+    
     
 }

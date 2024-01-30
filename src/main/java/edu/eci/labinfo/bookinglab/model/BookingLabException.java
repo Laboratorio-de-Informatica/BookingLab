@@ -8,6 +8,7 @@ public class BookingLabException extends Exception {
     public static final String UNVERIFIED_ACCOUNT = "Su cuenta no ha sido verificada.";
     public static final String INITDATE_MAYOR_ENDDATE = "La Hora inicial no puede ser mayor a la final";
     public static final String DATE_ALREADY_TAKEN = "Esta fecha se encuentra ocupada";
+    public static final String RESERVATION_NOT_FOUND = "No se encuentra una reserva con esas caracteristicas";
 
     public BookingLabException(String message) {
         super(message);
