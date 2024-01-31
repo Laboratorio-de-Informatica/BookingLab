@@ -13,9 +13,11 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
+import edu.eci.labinfo.bookinglab.service.ReservationService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
@@ -36,6 +38,9 @@ public class BookingController {
     public  final LocalDateTime mindate = LocalDateTime.of(date, timeam);
     public  final LocalDateTime maxdate = LocalDateTime.of(date, timepm);
     Logger logger;
+
+    @Autowired
+    private ReservationService reservationService;
 
     @PostConstruct
     public void init() {

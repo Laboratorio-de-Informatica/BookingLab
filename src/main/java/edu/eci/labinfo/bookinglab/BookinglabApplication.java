@@ -1,6 +1,10 @@
 package edu.eci.labinfo.bookinglab;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import edu.eci.labinfo.bookinglab.model.Laboratory;
 import edu.eci.labinfo.bookinglab.model.Role;
 import edu.eci.labinfo.bookinglab.model.User;
+import edu.eci.labinfo.bookinglab.service.LaboratoryService;
 import edu.eci.labinfo.bookinglab.service.ReservationService;
 import edu.eci.labinfo.bookinglab.service.UserService;
 
@@ -20,7 +25,7 @@ public class BookinglabApplication {
 	UserService myUserService;
 
 	@Autowired
-	ReservationService myReservationService;
+	LaboratoryService laboratoryService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(BookinglabApplication.class, args);
@@ -39,13 +44,17 @@ public class BookinglabApplication {
 		user.setPassword("1234567890");
 		user.setRole(Role.ADMINISTRADOR);
 		myUserService.addUser(user);
-
-		Laboratory plataformas = new Laboratory("Plataformas", 24);
-		Laboratory redes = new Laboratory("Redes", 16);
-		Laboratory software = new Laboratory("Software", 24);
-		Laboratory interactiva = new Laboratory("Interactiva", 7);
-		Laboratory fundamentos = new Laboratory("Fundamentos", 24);
-		Laboratory videojuegos = new Laboratory("Videojuegos", 22);
+		HashMap<String, Laboratory> laboratorios = new HashMap<>();
+        String[] nombres = {"Plataformas", "Redes", "Software", "Interactiva", "Fundamentos", "Videojuegos"};
+        int[] capacidades = {24, 16, 24, 7, 24, 22};
+        for (int i = 0; i < nombres.length; ++i) {
+            Laboratory lab = new Laboratory(nombres[i], capacidades[i]);
+            laboratorios.put(nombres[i], lab);
+        }
+		for(int i = 0; i < nombres.length;++i){
+			laboratoryService.createLaboratory(laboratorios.get(nombres[i]));
+		}
+	
 		};
 	}
 

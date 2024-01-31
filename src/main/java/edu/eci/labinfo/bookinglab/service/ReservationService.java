@@ -25,8 +25,7 @@ public class ReservationService {
                 .isEmpty()) {
             throw new BookingLabException(BookingLabException.DATE_ALREADY_TAKEN);
         }
-        reservation = nameFormatter(reservation);
-        return reservationRepository.save(reservation);
+        return reservationRepository.save(nameFormatter(reservation));
     }
 
     private Reservation nameFormatter(Reservation reservation) {
