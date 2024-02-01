@@ -47,4 +47,8 @@ public class LaboratoryService {
         laboratoryRepository.deleteByLaboratoryName(labName.toUpperCase());
     }
 
+    public void deleteAllLaboratories(){
+        laboratoryRepository.deleteAll();
+    }
+
 }

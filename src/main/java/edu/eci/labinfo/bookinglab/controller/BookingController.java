@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
+import edu.eci.labinfo.bookinglab.model.Reservation;
 import edu.eci.labinfo.bookinglab.service.ReservationService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.ExternalContext;
@@ -42,12 +43,15 @@ public class BookingController {
     @Autowired
     private ReservationService reservationService;
 
+    private Reservation reservation;
+
     @PostConstruct
     public void init() {
         serverTimeZone = ZoneId.systemDefault().toString();
         eventModel = new DefaultScheduleModel();
         event = new DefaultScheduleEvent<>();
         logger = LoggerFactory.getLogger(BookingController.class);
+        reservation = new Reservation();
     }
 
     public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
@@ -81,6 +85,7 @@ public class BookingController {
     }
 
     public void saveReservation() {
+        logger.info("Professor name: " + reservation.getProfessor());
         logger.info("Reserva guardada");
         // TODO implementar logica para guardar la reserva
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();

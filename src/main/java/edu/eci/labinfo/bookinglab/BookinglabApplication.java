@@ -44,6 +44,7 @@ public class BookinglabApplication {
 		user.setPassword("1234567890");
 		user.setRole(Role.ADMINISTRADOR);
 		myUserService.addUser(user);
+		laboratoryService.deleteAllLaboratories();
 		HashMap<String, Laboratory> laboratorios = new HashMap<>();
         String[] nombres = {"Plataformas", "Redes", "Software", "Interactiva", "Fundamentos", "Videojuegos"};
         int[] capacidades = {24, 16, 24, 7, 24, 22};
