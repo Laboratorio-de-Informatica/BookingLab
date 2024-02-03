@@ -14,18 +14,19 @@ import org.primefaces.model.ScheduleModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
-import edu.eci.labinfo.bookinglab.service.ReservationService;
+import edu.eci.labinfo.bookinglab.model.Booking;
+import edu.eci.labinfo.bookinglab.service.BookingService;
+import edu.eci.labinfo.bookinglab.service.LaboratoryService;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
 import lombok.Data;
 
 @Component
-@ViewScoped
+@SessionScoped
 @Data
 public class BookingController {
 
@@ -33,14 +34,23 @@ public class BookingController {
     private String serverTimeZone;
     private ScheduleEvent<?> event;
     private static LocalDate date = LocalDate.now();
-    private static LocalTime timeam = LocalTime.of(7,0);
-    private static LocalTime timepm = LocalTime.of(19,0);
-    public  final LocalDateTime mindate = LocalDateTime.of(date, timeam);
-    public  final LocalDateTime maxdate = LocalDateTime.of(date, timepm);
+    private static LocalTime timeam = LocalTime.of(7, 0);
+    private static LocalTime timepm = LocalTime.of(19, 0);
+    public final LocalDateTime mindate = LocalDateTime.of(date, timeam);
+    public final LocalDateTime maxdate = LocalDateTime.of(date, timepm);
+    private Booking booking;
     Logger logger;
 
     @Autowired
-    private ReservationService reservationService;
+    BookingService reservationService;
+    private String professor;
+    private String course;
+    private LocalDateTime initialDateTime;
+    private LocalDateTime endDateTime;
+    private String laboratory;
+
+    @Autowired
+    LaboratoryService laboratoryService;
 
     @PostConstruct
     public void init() {
@@ -48,6 +58,13 @@ public class BookingController {
         eventModel = new DefaultScheduleModel();
         event = new DefaultScheduleEvent<>();
         logger = LoggerFactory.getLogger(BookingController.class);
+    }
+
+    public void startBooking() {
+        logger.info("Iniciando reserva");
+        this.booking = new Booking();
+        // booking not null log
+        
     }
 
     public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
@@ -81,8 +98,21 @@ public class BookingController {
     }
 
     public void saveReservation() {
-        logger.info("Reserva guardada");
+        // reservationSetter();
+        logger.info("Booking not null" + (booking != null));
+        logger.info("Teacher name: " + booking.getTeacher());
+        logger.info("Course name: " + booking.getCourse());
+        logger.info("Initial time: " + booking.getInitialTimeSlot());
+        logger.info("Final time: " + booking.getFinalTimeSlot());
+        logger.info("Observation: " + booking.getObservation());
+        // try {
+        //     reservationService.createReservation(reservation);
+        //     logger.info("Reserva guardada");
+        // } catch (BookingLabException e) {
+        //     e.printStackTrace();
+        // }
         // TODO implementar logica para guardar la reserva
+
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         String redirectPath = "index.xhtml";
         try {
@@ -91,5 +121,23 @@ public class BookingController {
             logger.error("Error al redirigir a la pagina de inicio");
         }
     }
+
+    // private void reservationSetter() {
+    //     reservation = new Reservation();
+    //     if (professor == null || course == null) {
+    //         logger.info("PANA ESTAN NULOS" + " Valor de professor: " + professor + " Valor de curso: " + course);
+    //     }
+    //     reservation.setProfessor(professor);
+    //     reservation.setCourse(course);
+    //     reservation.setInitialDateTime(mindate);
+    //     reservation.setEndDateTime(maxdate);
+    //     // reservation.setInitialDateTime(initialDateTime);
+    //     // reservation.setEndDateTime(endDateTime);
+    //     try {
+    //         reservation.setBLaboratory(laboratoryService.getLaboratoryByName(this.laboratory).orElse(null));
+    //     } catch (BookingLabException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
 }

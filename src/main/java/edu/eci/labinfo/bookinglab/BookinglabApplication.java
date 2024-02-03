@@ -1,9 +1,6 @@
 package edu.eci.labinfo.bookinglab;
 
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +12,6 @@ import edu.eci.labinfo.bookinglab.model.Laboratory;
 import edu.eci.labinfo.bookinglab.model.Role;
 import edu.eci.labinfo.bookinglab.model.User;
 import edu.eci.labinfo.bookinglab.service.LaboratoryService;
-import edu.eci.labinfo.bookinglab.service.ReservationService;
 import edu.eci.labinfo.bookinglab.service.UserService;
 
 @SpringBootApplication
@@ -44,6 +40,7 @@ public class BookinglabApplication {
 		user.setPassword("1234567890");
 		user.setRole(Role.ADMINISTRADOR);
 		myUserService.addUser(user);
+		laboratoryService.deleteAllLaboratories();
 		HashMap<String, Laboratory> laboratorios = new HashMap<>();
         String[] nombres = {"Plataformas", "Redes", "Software", "Interactiva", "Fundamentos", "Videojuegos"};
         int[] capacidades = {24, 16, 24, 7, 24, 22};

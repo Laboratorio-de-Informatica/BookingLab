@@ -2,6 +2,7 @@ package edu.eci.labinfo.bookinglab.controller;
 
 import java.io.IOException;
 import java.util.List;
+
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
+
 import edu.eci.labinfo.bookinglab.model.BookingLabException;
 import edu.eci.labinfo.bookinglab.model.User;
 import edu.eci.labinfo.bookinglab.service.UserService;
@@ -43,6 +45,7 @@ public class LoginController {
 
     public Boolean login() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        logger.info("Nombre de usuario: "+ userName);
         // Verificar que se ingresó un nombre de usuario y una contraseña
         if (password == null || userName == null) {
             FacesContext.getCurrentInstance().addMessage(null,
