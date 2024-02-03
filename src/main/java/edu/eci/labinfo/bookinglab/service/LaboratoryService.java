@@ -1,6 +1,7 @@
 package edu.eci.labinfo.bookinglab.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,13 @@ public class LaboratoryService {
 
     public void deleteAllLaboratories(){
         laboratoryRepository.deleteAll();
+    }
+
+    public Optional<Laboratory> getLaboratoryByName(String labname) throws BookingLabException{
+        if(laboratoryRepository.findByLaboratoryName(labname.toUpperCase()).isEmpty()){
+            throw  new BookingLabException(BookingLabException.LABORATORY_NOT_FOUND);
+        }
+        return laboratoryRepository.findByLaboratoryName(labname);
     }
 
 }

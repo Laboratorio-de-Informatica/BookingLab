@@ -43,6 +43,7 @@ public class LoginController {
 
     public Boolean login() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        logger.info("Nombre de usuario: "+ userName);
         // Verificar que se ingresó un nombre de usuario y una contraseña
         if (password == null || userName == null) {
             FacesContext.getCurrentInstance().addMessage(null,

@@ -16,8 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
+import edu.eci.labinfo.bookinglab.model.BookingLabException;
+import edu.eci.labinfo.bookinglab.model.Laboratory;
 import edu.eci.labinfo.bookinglab.model.Reservation;
+import edu.eci.labinfo.bookinglab.service.LaboratoryService;
 import edu.eci.labinfo.bookinglab.service.ReservationService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.ExternalContext;
@@ -26,7 +30,7 @@ import jakarta.faces.view.ViewScoped;
 import lombok.Data;
 
 @Component
-@ViewScoped
+@SessionScope
 @Data
 public class BookingController {
 
@@ -41,17 +45,24 @@ public class BookingController {
     Logger logger;
 
     @Autowired
-    private ReservationService reservationService;
+    ReservationService reservationService;
+    private  Reservation reservation;
+    private  String professor;
+    private  String course;
+    private  LocalDateTime initialDateTime;
+    private  LocalDateTime endDateTime;
+    private  String laboratory;
 
-    private Reservation reservation;
+    @Autowired
+    LaboratoryService laboratoryService;
 
+    
     @PostConstruct
     public void init() {
         serverTimeZone = ZoneId.systemDefault().toString();
         eventModel = new DefaultScheduleModel();
         event = new DefaultScheduleEvent<>();
         logger = LoggerFactory.getLogger(BookingController.class);
-        reservation = new Reservation();
     }
 
     public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
@@ -85,15 +96,40 @@ public class BookingController {
     }
 
     public void saveReservation() {
+        reservationSetter();
         logger.info("Professor name: " + reservation.getProfessor());
-        logger.info("Reserva guardada");
+        try {
+            reservationService.createReservation(reservation);
+            logger.info("Reserva guardada");
+        } catch (BookingLabException e) {
+            e.printStackTrace();
+        }
         // TODO implementar logica para guardar la reserva
+
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         String redirectPath = "index.xhtml";
         try {
             ec.redirect(ec.getRequestContextPath() + redirectPath);
         } catch (IOException e) {
             logger.error("Error al redirigir a la pagina de inicio");
+        }
+    }
+
+    private  void reservationSetter(){
+        reservation = new Reservation();
+        if (professor == null || course == null) {
+            logger.info("PANA ESTAN NULOS" + " Valor de professor: " + professor + " Valor de curso: " + course);
+        }
+        reservation.setProfessor(professor);
+        reservation.setCourse(course);
+        reservation.setInitialDateTime(mindate);
+        reservation.setEndDateTime(maxdate);
+        //reservation.setInitialDateTime(initialDateTime);
+        //reservation.setEndDateTime(endDateTime);
+        try {
+            reservation.setBLaboratory(laboratoryService.getLaboratoryByName(this.laboratory).orElse(null));
+        } catch (BookingLabException e) {
+            e.printStackTrace();
         }
     }
 
