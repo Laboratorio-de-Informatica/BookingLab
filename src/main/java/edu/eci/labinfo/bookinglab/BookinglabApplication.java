@@ -1,9 +1,6 @@
 package edu.eci.labinfo.bookinglab;
 
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +12,6 @@ import edu.eci.labinfo.bookinglab.model.Laboratory;
 import edu.eci.labinfo.bookinglab.model.Role;
 import edu.eci.labinfo.bookinglab.model.User;
 import edu.eci.labinfo.bookinglab.service.LaboratoryService;
-import edu.eci.labinfo.bookinglab.service.ReservationService;
 import edu.eci.labinfo.bookinglab.service.UserService;
 
 @SpringBootApplication
