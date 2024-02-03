@@ -3,10 +3,12 @@ package edu.eci.labinfo.bookinglab.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import lombok.Data;

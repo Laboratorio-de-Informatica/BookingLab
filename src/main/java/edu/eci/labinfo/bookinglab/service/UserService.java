@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.eci.labinfo.bookinglab.data.UserRepository;
 import edu.eci.labinfo.bookinglab.model.User;
 
-
-
 @Service
 public class UserService {
 
