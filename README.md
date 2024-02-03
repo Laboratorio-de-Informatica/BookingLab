@@ -49,17 +49,7 @@ Diríjase a su navegador de preferencia y vaya a la siguiente dirección: [http:
 
 ## Descripción de la aplicación 📖
 
-Esta aplicación es un cliente web multiusuario que se ejecuta en el navegador y utiliza JSON para el formato de mensajes. Actúa como un servidor de fachada, encapsulando llamadas a servicios web externos a través de HTTP.
-
-La fachada de servicios implementa un caché para evitar llamadas duplicadas, almacenando las respuestas como cadenas y comparándolas.
-
-El cache de la aplicación usa el patrón de diseño Singleton para garantizar que solo exista una instancia de la clase Cache.
-
-Los modulos de la aplicación son los siguientes:
-
-* **Cache**: Contiene la implementación del caché de la aplicación.
-* **HttpServer**: Contiene la implementación del servidor web de la aplicación.
-* **HttpMovieConnection**: Contiene la implementación del servicio de conexión a la API externa.
+...
 
 ## Versionado 📌
 
