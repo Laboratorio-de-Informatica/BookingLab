@@ -1,6 +1,6 @@
 package edu.eci.labinfo.bookinglab.data;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,9 +11,12 @@ import edu.eci.labinfo.bookinglab.model.Booking;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    Optional<Booking> findByInitialTimeSlot(LocalDateTime initialTimeSlot);
-    Optional<Booking> findByInitialTimeSlotAndFinalTimeSlot(LocalDateTime initialTimeSlot, LocalDateTime finalTimeSlot);
+    Optional<Booking> findByInitialTimeSlot(LocalTime initialTimeSlot);
+
+    Optional<Booking> findByInitialTimeSlotAndFinalTimeSlot(LocalTime initialTimeSlot, LocalTime finalTimeSlot);
+
     Optional<Booking> findByTeacher(String teacher);
-    Optional<Booking> findByLaboratoryLaboratoryName(String laboratoryName);
+
+    Optional<Booking> findByLaboratory(String laboratory);
 
 }

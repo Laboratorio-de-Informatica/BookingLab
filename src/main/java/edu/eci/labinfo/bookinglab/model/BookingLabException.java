@@ -10,6 +10,7 @@ public class BookingLabException extends Exception {
     public static final String RESERVATION_NOT_FOUND = "No se encuentra una reserva con esas caracteristicas";
     public static final String LABORATORY_ALREADY_CREATED = "Este laboratorio ya existe";
     public static final String LABORATORY_NOT_FOUND = "El laboratorio no se encuentra";
+    public static final String ERRO_INDEX_PAGE =  "Error al redirigir a la pagina de inicio";
 
     public BookingLabException(String message) {
         super(message);

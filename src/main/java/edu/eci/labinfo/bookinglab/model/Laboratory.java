@@ -1,32 +1,45 @@
 package edu.eci.labinfo.bookinglab.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Getter;
 
-@Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Laboratory {
+@Getter
+public enum Laboratory {
 
-    @Id
-    private String laboratoryName;
-    private int availableComputers;
+    SOFTWARE("Software"),
+    REDES("Redes"),
+    PLATAFORMAS("Plataformas"),
+    MULTIMEDIA("Multimedia"),
+    AULA_EDFI("Aula EDFI"),
+    INTERACTIVA("Interactiva"),
+    FUNDAMENTOS("Fundamentos"),
+    VIDEOJUEGOS("Videojuegos");
 
-    @OneToMany(mappedBy = "laboratory")
-    @ToString.Exclude
-    private List<Booking> bookings;
+    private String value;
 
-    public Laboratory(String laboratoryName, int availableComputers) {
-        this.laboratoryName = laboratoryName;
-        this.availableComputers = availableComputers;
+    Laboratory(String value) {
+        this.value = value;
+    }
+
+    public static Laboratory findByValue(String laboratory) {
+        Laboratory response = null;
+        for (Laboratory l : Laboratory.values()) {
+            if (l.getValue().equalsIgnoreCase(laboratory)) {
+                response = l;
+                break;
+            }
+        }
+        return response;
+    }
+
+    public static List<String> getAllLaboratories() {
+        List<String> laboratories = new ArrayList<>();
+        for (Laboratory l : Laboratory.values()) {
+            laboratories.add(l.getValue());
+        }
+        return laboratories;
     }
 
 }

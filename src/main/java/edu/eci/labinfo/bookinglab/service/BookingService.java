@@ -7,14 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.eci.labinfo.bookinglab.data.BookingRepository;
-import edu.eci.labinfo.bookinglab.model.BookingLabException;
 import edu.eci.labinfo.bookinglab.model.Booking;
+import edu.eci.labinfo.bookinglab.model.BookingLabException;
+import edu.eci.labinfo.bookinglab.model.Day;
+import edu.eci.labinfo.bookinglab.model.Laboratory;
 
 @Service
 public class BookingService {
 
     @Autowired
-    private static BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
     public Booking createReservation(Booking booking) throws BookingLabException {
         if (booking.getInitialTimeSlot().isAfter(booking.getFinalTimeSlot())) {
@@ -69,6 +71,14 @@ public class BookingService {
 
     public void delReservation(Booking booking){
         bookingRepository.deleteById(booking.getBookingId());
+    }
+
+    public List<String> getWeekDays() {
+        return Day.getAllDays();
+    }
+
+    public List<String> getLaboratories() {
+        return Laboratory.getAllLaboratories();
     }
 
 }

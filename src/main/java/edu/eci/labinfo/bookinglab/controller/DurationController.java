@@ -1,49 +1,56 @@
 package edu.eci.labinfo.bookinglab.controller;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
+import edu.eci.labinfo.bookinglab.model.Duration;
+import edu.eci.labinfo.bookinglab.service.BookingService;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
 import lombok.Data;
 
 @Component
-@ViewScoped
+@SessionScope
 @Data
 public class DurationController {
 
-    private String selectedOption;
+    private int selectedOption;
     private String summaryMessage;
-    private int repetition;
-    private int duration;
-    private List<String> selectedDays;
     private List<String> days;
+    private Duration duration;
     Logger logger;
+
+    @Autowired
+    BookingService bookingService;
 
     @PostConstruct
     public void init() {
-        selectedOption = "0";
+        selectedOption = 0;
+        duration = new Duration(1, 1);
         summaryMessage = "no se repite";
-        repetition = 1;
-        duration = 1;
-        days = List.of("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo");
-        selectedDays = new ArrayList<>();
+        days = bookingService.getWeekDays();
         logger = LoggerFactory.getLogger(DurationController.class);
+    }
+
+    public void startDuration() {
+        selectedOption = 0;
+        summaryMessage = "no se repite";
+        duration = new Duration(1, 1);
     }
 
     public void updateSummaryMessage() {
         ensureAtLeastOneDaySelected();
         switch (selectedOption) {
-            case "1":
+            case 1:
                 summaryMessage = generateDailyMessage();
                 break;
-            case "2":
+            case 2:
                 summaryMessage = generateWeeklyMessage();
                 break;
             default:
@@ -54,23 +61,23 @@ public class DurationController {
     }
     
     private void ensureAtLeastOneDaySelected() {
-        if (selectedDays.isEmpty()) {
-            selectedDays.add(days.get(LocalDate.now().getDayOfWeek().getValue() - 1));
+        if (duration.getSelectedDays().isEmpty()) {
+            duration.getSelectedDays().add(days.get(LocalDate.now().getDayOfWeek().getValue() - 1));
         }
     }
     
     private String generateDailyMessage() {
-        String message = "se repite cada " + repetition + " dia" + (repetition > 1 ? "s " : " ");
+        String message = "se repite cada " + duration.getRepetitions() + " dia" + (duration.getRepetitions() > 1 ? "s " : " ");
         return message;
     }
     
     private String generateWeeklyMessage() {
-        String message = "se repite cada " + repetition + " semana" + (repetition > 1 ? "s " : " ");
+        String message = "se repite cada " + duration.getRepetitions() + " semana" + (duration.getRepetitions() > 1 ? "s " : " ");
         String daysOfWeek = "";
-        message += selectedDays.size() > 1 ? "los " : "el ";
-        for (String day : selectedDays) {
+        message += duration.getSelectedDays().size() > 1 ? "los " : "el ";
+        for (String day : duration.getSelectedDays()) {
             String dayShort = day;
-            if (selectedDays.size() > 1) {
+            if (duration.getSelectedDays().size() > 1) {
                 dayShort = day.substring(0, Math.min(day.length(), 3));
             }
             if (!daysOfWeek.isEmpty()) {

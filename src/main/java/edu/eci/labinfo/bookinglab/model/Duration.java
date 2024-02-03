@@ -1,7 +1,9 @@
 package edu.eci.labinfo.bookinglab.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,11 +22,17 @@ public class Duration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long durationId;
-    private String typeOfRepetition;
     private List<String> selectedDays;
     private int repetitions;
     private int duration;
     
     @OneToOne(mappedBy = "duration")
     private Booking booking;
+
+    public Duration(int repetitions, int duration) {
+        this.repetitions = repetitions;
+        this.duration = duration;
+        this.selectedDays = new ArrayList<>();
+    }
+
 }
