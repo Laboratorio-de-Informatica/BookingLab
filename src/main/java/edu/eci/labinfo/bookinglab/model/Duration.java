@@ -1,13 +1,12 @@
 package edu.eci.labinfo.bookinglab.model;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,17 +15,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
+public class Duration {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idReservation;
-    private String professor;
-    private String course;
+    private Long durationId;
+    private String typeOfRepetition;
+    private List<String> selectedDays;
+    private int repetitions;
+    private int duration;
     
-    @ManyToOne
-    @JoinColumn(name = "laboratoryName")
-    private Laboratory bLaboratory;
-
-    private LocalDateTime initialDateTime;
-    private LocalDateTime endDateTime;
+    @OneToOne(mappedBy = "duration")
+    private Booking booking;
 }
