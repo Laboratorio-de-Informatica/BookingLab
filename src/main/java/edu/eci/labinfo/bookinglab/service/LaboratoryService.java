@@ -56,7 +56,7 @@ public class LaboratoryService {
         if(laboratoryRepository.findByLaboratoryName(labname.toUpperCase()).isEmpty()){
             throw  new BookingLabException(BookingLabException.LABORATORY_NOT_FOUND);
         }
-        return laboratoryRepository.findByLaboratoryName(labname);
+        return laboratoryRepository.findByLaboratoryName(labname.toUpperCase());
     }
 
 }
