@@ -1,9 +1,11 @@
 package edu.eci.labinfo.bookinglab.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import org.primefaces.event.SelectEvent;
@@ -63,6 +65,25 @@ public class BookingController {
         eventModel = new DefaultScheduleModel();
         event = new DefaultScheduleEvent<>();
         logger = LoggerFactory.getLogger(BookingController.class);
+        loadReservations();
+    }
+
+    private void loadReservations() {
+        List<Booking> bookings = bookingService.getAllReservations();
+        for (Booking booking : bookings) {
+            LocalDate today = LocalDate.now(); // Esto es solo un placeholder, ajusta según tu lógica
+            LocalDateTime startDateTime = LocalDateTime.of(today, booking.getInitialTimeSlot());
+            LocalDateTime endDateTime = LocalDateTime.of(today, booking.getFinalTimeSlot());
+
+            DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
+                    .title(booking.getCourse() + " - " + booking.getTeacher() + " (" + booking.getLaboratory() + ")")
+                    .startDate(startDateTime)
+                    .endDate(endDateTime)
+                    .description(booking.getObservation())
+                    .data(booking.getBookingId())
+                    .build();
+            eventModel.addEvent(event);
+        }
     }
 
     public void startBooking() {
