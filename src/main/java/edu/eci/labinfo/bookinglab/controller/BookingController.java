@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import org.primefaces.event.SelectEvent;
@@ -22,7 +21,6 @@ import org.springframework.web.context.annotation.SessionScope;
 import edu.eci.labinfo.bookinglab.model.Booking;
 import edu.eci.labinfo.bookinglab.model.BookingLabException;
 import edu.eci.labinfo.bookinglab.service.BookingService;
-import edu.eci.labinfo.bookinglab.service.DurationService;
 import edu.eci.labinfo.bookinglab.service.PrimeFacesWrapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -46,8 +44,6 @@ public class BookingController {
 
     @Autowired
     BookingService bookingService;
-    @Autowired
-    DurationService durationService;
     @Autowired
     DurationController durationController;
     @Autowired
@@ -131,10 +127,8 @@ public class BookingController {
             primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
             return false;
         }
-
+        // TODO: Ver como asignar multiples series
         if (durationController.getSelectedOption() != 0) {
-            durationService.saveDuration(durationController.getDuration());
-            booking.setDuration(durationController.getDuration());
             try {
                 bookingService.updateReservation(booking);
             } catch (BookingLabException e) {

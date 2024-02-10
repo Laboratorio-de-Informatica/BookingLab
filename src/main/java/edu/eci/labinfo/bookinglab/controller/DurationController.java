@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
-import edu.eci.labinfo.bookinglab.model.Duration;
 import edu.eci.labinfo.bookinglab.service.BookingService;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
@@ -23,7 +22,9 @@ public class DurationController {
     private int selectedOption;
     private String summaryMessage;
     private List<String> days;
-    private Duration duration;
+    private List<String> selectedDays;
+    private int repetitions;
+    private int duration;
     Logger logger;
 
     @Autowired
@@ -32,7 +33,8 @@ public class DurationController {
     @PostConstruct
     public void init() {
         selectedOption = 0;
-        duration = new Duration(1, 1);
+        repetitions = 1;
+        duration = 1;
         summaryMessage = "no se repite";
         days = bookingService.getWeekDays();
         logger = LoggerFactory.getLogger(DurationController.class);
@@ -41,7 +43,6 @@ public class DurationController {
     public void startDuration() {
         selectedOption = 0;
         summaryMessage = "no se repite";
-        duration = new Duration(1, 1);
     }
 
     public void updateSummaryMessage() {
@@ -61,23 +62,23 @@ public class DurationController {
     }
     
     private void ensureAtLeastOneDaySelected() {
-        if (duration.getSelectedDays().isEmpty()) {
-            duration.getSelectedDays().add(days.get(LocalDate.now().getDayOfWeek().getValue() - 1));
+        if (selectedDays.isEmpty()) {
+            selectedDays.add(days.get(LocalDate.now().getDayOfWeek().getValue() - 1));
         }
     }
     
     private String generateDailyMessage() {
-        String message = "se repite cada " + duration.getRepetitions() + " dia" + (duration.getRepetitions() > 1 ? "s " : " ");
+        String message = "se repite cada " + repetitions + " dia" + (repetitions > 1 ? "s " : " ");
         return message;
     }
     
     private String generateWeeklyMessage() {
-        String message = "se repite cada " + duration.getRepetitions() + " semana" + (duration.getRepetitions() > 1 ? "s " : " ");
+        String message = "se repite cada " + repetitions + " semana" + (repetitions > 1 ? "s " : " ");
         String daysOfWeek = "";
-        message += duration.getSelectedDays().size() > 1 ? "los " : "el ";
-        for (String day : duration.getSelectedDays()) {
+        message += selectedDays.size() > 1 ? "los " : "el ";
+        for (String day : selectedDays) {
             String dayShort = day;
-            if (duration.getSelectedDays().size() > 1) {
+            if (selectedDays.size() > 1) {
                 dayShort = day.substring(0, Math.min(day.length(), 3));
             }
             if (!daysOfWeek.isEmpty()) {
