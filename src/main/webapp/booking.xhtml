@@ -14,7 +14,7 @@
                 <ul class="list-none p-0 m-0">
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <p:outputLabel for="teacher" value="Profesor" styleClass="text-500 w-full md:w-2 font-medium" />
-                        <p:inputText id="teacher" placeholder="#{loginController.userName}" value="#{bookingController.booking.teacher}" required="true"  styleClass="text-500 w-20rem"/>
+                        <p:inputText id="teacher" placeholder="Profesor" value="#{bookingController.booking.teacher}" required="true"  styleClass="text-500 w-20rem"/>
                     </li>
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <p:outputLabel for="course" value="Curso" styleClass="text-500 w-full md:w-2 font-medium" />
@@ -48,52 +48,39 @@
                     </li>
                     <li class="grid align-items-center py-3 px-2 border-top-1 surface-border">
                         <p:outputLabel value="Repetir" styleClass="text-500 w-6 md:w-2 font-medium col-6" />
-                        <p:selectOneRadio value="#{durationController.selectedOption}" layout="responsive" columns="3" styleClass="col-6">
-                            <f:selectItem itemLabel="No repetir" itemValue="0" />
-                            <f:selectItem itemLabel="Cada día" itemValue="1">
-                            </f:selectItem>
-                            <f:selectItem itemLabel="Cada semana" itemValue="2"/>
-                            <p:ajax event="change" update="seccionARenderizar durationpanel" />
-                            <p:ajax event="change" update="summaryMessage" listener="#{durationController.updateSummaryMessage}"/>
-                        </p:selectOneRadio>
-                        <p:outputPanel id="seccionARenderizar" styleClass="w-full flex" >
-                            <p:outputPanel rendered="#{durationController.selectedOption != 0}" styleClass="col-2">
-                                <p:spinner value="#{durationController.duration.repetitions}" 
-                                    upButtonStyleClass="ui-button-success" downButtonStyleClass="ui-button-danger" min="1">
-                                    <p:ajax event="change" update="summaryMessage" listener="#{durationController.updateSummaryMessage}"/>
-                                </p:spinner>
-                            </p:outputPanel>
-                            <p:outputPanel rendered="#{durationController.selectedOption == 2}" styleClass="col-10 w-full">
-                                <p:selectManyButton id="selectDaysButton" value="#{durationController.duration.selectedDays}">
-                                    <f:selectItems value="#{durationController.days}" var="day" 
-                                    itemValue="#{day}" itemLabel="#{day}" />
-                                    <p:ajax event="change" update="summaryMessage" listener="#{durationController.updateSummaryMessage}"/>
-                                </p:selectManyButton>
-                            </p:outputPanel>
+                        <p:outputPanel>
+                            <p:spinner value="#{durationController.repetitions}" 
+                                upButtonStyleClass="ui-button-success" downButtonStyleClass="ui-button-danger" min="1">
+                                <p:ajax event="change" update="summaryMessage" listener="#{durationController.updateSummaryMessage}"/>
+                            </p:spinner>
+                            <p:selectManyButton id="selectDaysButton" value="#{durationController.selectedDays}">
+                                <f:selectItems value="#{durationController.days}" var="day" 
+                                itemValue="#{day}" itemLabel="#{durationController.getDisplayNameOfDayOfWeek(day)}" />
+                                <p:ajax event="change" update="summaryMessage" listener="#{durationController.updateSummaryMessage}"/>
+                            </p:selectManyButton>
+                            <p:outputLabel id="summaryMessage" styleClass="text-red-500 font-bold ml-2">
+                                Este evento #{durationController.summaryMessage}
+                            </p:outputLabel>
                         </p:outputPanel>
-                        <p:outputLabel id="summaryMessage" styleClass="text-red-500 font-bold ml-2">
-                            Este evento #{durationController.summaryMessage}
+                    </li>
+                    <li class="grid align-items-center py-3 px-2 border-top-1 surface-border">
+                        <p:outputLabel for="duration" value="Duración" styleClass="text-500 w-6 md:w-2 font-medium" />
+                        <p:spinner id="duration" value="#{durationController.duration}"
+                            upButtonStyleClass="ui-button-success" downButtonStyleClass="ui-button-danger" min="1">
+                            <p:ajax event="change" update="durationMessage" />
+                        </p:spinner>
+                        <p:outputLabel id="durationMessage" styleClass="text-red-500 font-bold ml-2">
+                            Este evento dura #{durationController.duration} #{durationController.duration == 1 ? 'vez' : 'veces'} en total
                         </p:outputLabel>
                     </li>
-                    <p:outputPanel id="durationpanel">
-                        <p:outputPanel rendered="#{durationController.selectedOption != 0}">
-                            <li class="grid align-items-center py-3 px-2 border-top-1 surface-border">
-                                <p:outputLabel for="duration" value="Duración" styleClass="text-500 w-6 md:w-2 font-medium" />
-                                <p:spinner id="duration" value="#{durationController.duration.duration}"
-                                upButtonStyleClass="ui-button-success" downButtonStyleClass="ui-button-danger" min="1">
-                                <p:ajax event="change" update="durationMessage" />
-                                </p:spinner>
-                                <p:outputLabel id="durationMessage" styleClass="text-red-500 font-bold ml-2">
-                                    Este evento dura #{durationController.duration.duration} #{durationController.duration.duration == 1 ? 'vez' : 'veces'} en total
-                                </p:outputLabel>
-                            </li>
-                        </p:outputPanel>
-                    </p:outputPanel>
                 </ul>
             </p:outputPanel>
-
-            <p:commandButton value="Reservar" process="reservation @this" update="reservation :form"
-            styleClass="btn-link ui-button-raised ui-button-success" actionListener="#{bookingController.saveReservation}"/>
+            <p:outputPanel styleClass="flex gap-5">
+                <p:commandButton value="Regresar" onclick="window.location.href='index.xhtml'"
+                                      styleClass="btn-link ui-button-raised ui-button-secondary"/>  
+                <p:commandButton value="Reservar" process="reservation @this" update="reservation :form"
+                styleClass="btn-link ui-button-raised ui-button-success" actionListener="#{bookingController.saveReservation}"/>
+            </p:outputPanel>
         </div>
     </ui:define>
 </ui:composition>

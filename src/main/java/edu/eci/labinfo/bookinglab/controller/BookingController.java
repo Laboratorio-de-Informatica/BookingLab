@@ -1,6 +1,7 @@
 package edu.eci.labinfo.bookinglab.controller;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,8 +21,10 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import edu.eci.labinfo.bookinglab.model.Booking;
 import edu.eci.labinfo.bookinglab.model.BookingLabException;
+import edu.eci.labinfo.bookinglab.model.Laboratory;
 import edu.eci.labinfo.bookinglab.service.BookingService;
 import edu.eci.labinfo.bookinglab.service.PrimeFacesWrapper;
+import edu.eci.labinfo.bookinglab.utils.LabColorManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
@@ -67,25 +70,27 @@ public class BookingController {
     private void loadReservations() {
         List<Booking> bookings = bookingService.getAllReservations();
         for (Booking booking : bookings) {
-            LocalDate today = LocalDate.now(); // Esto es solo un placeholder, ajusta según tu lógica
-            LocalDateTime startDateTime = LocalDateTime.of(today, booking.getInitialTimeSlot());
-            LocalDateTime endDateTime = LocalDateTime.of(today, booking.getFinalTimeSlot());
-
-            DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
-                    .title(booking.getCourse() + " - " + booking.getTeacher() + " (" + booking.getLaboratory() + ")")
-                    .startDate(startDateTime)
-                    .endDate(endDateTime)
-                    .description(booking.getObservation())
-                    .data(booking.getBookingId())
-                    .build();
-            eventModel.addEvent(event);
+            placeBookingEvent(booking);
         }
+    }
+
+    private void placeBookingEvent(Booking booking) {
+        LocalDateTime startDateTime = LocalDateTime.of(booking.getDate(), booking.getInitialTimeSlot());
+        LocalDateTime endDateTime = LocalDateTime.of(booking.getDate(), booking.getFinalTimeSlot());
+        DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
+                .title(booking.getCourse().toUpperCase() + " - " + booking.getTeacher() + " (" + booking.getLaboratory() + ")")
+                .startDate(startDateTime)
+                .endDate(endDateTime)
+                .description(booking.getObservation())
+                .data(booking)
+                .backgroundColor(LabColorManager.getInstance().getColor(Laboratory.findByValue(booking.getLaboratory())))
+                .build();
+        eventModel.addEvent(event);
     }
 
     public void startBooking() {
         logger.info("Iniciando reserva");
         this.booking = new Booking();
-        durationController.startDuration();
     }
 
     public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
@@ -119,23 +124,21 @@ public class BookingController {
     }
 
     public Boolean saveReservation() {
-        try {
-            bookingService.createReservation(booking);
-        } catch (BookingLabException e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
-            primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
-            return false;
-        }
-        // TODO: Ver como asignar multiples series
-        if (durationController.getSelectedOption() != 0) {
-            try {
-                bookingService.updateReservation(booking);
-            } catch (BookingLabException e) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
-                primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
-                return false;
+        List<DayOfWeek> selectedDays = durationController.getSelectedDays();
+        int repetitions = durationController.getRepetitions();
+        int duration = durationController.getDuration();
+        for (int i = 0; i < duration; i++) {
+            for (DayOfWeek day : selectedDays) {
+                try {
+                    Booking bookingToSave = makeBooking(repetitions, i, day);
+                    bookingService.createReservation(bookingToSave);
+                    placeBookingEvent(bookingToSave);
+                } catch (BookingLabException e) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
+                    primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
+                    return false;
+                }
             }
         }
 
@@ -148,6 +151,21 @@ public class BookingController {
             return false;
         }
         return true;
+    }
+
+    private Booking makeBooking(int repetitions, int i, DayOfWeek day) {
+        Booking bookingToSave = new Booking();
+        bookingToSave.setTeacher(this.booking.getTeacher());
+        bookingToSave.setCourse(this.booking.getCourse());
+        bookingToSave.setLaboratory(this.booking.getLaboratory());
+        bookingToSave.setInitialTimeSlot(this.booking.getInitialTimeSlot());
+        bookingToSave.setFinalTimeSlot(this.booking.getFinalTimeSlot());
+        bookingToSave.setObservation(this.booking.getObservation());
+        bookingToSave.setCanceled(false);
+        bookingToSave.setDay(day);
+        bookingToSave.setDate(LocalDate.now().with(day));
+        bookingToSave.setDate(bookingToSave.getDate().plusWeeks(repetitions * i));
+        return bookingToSave;
     }
 
 }
