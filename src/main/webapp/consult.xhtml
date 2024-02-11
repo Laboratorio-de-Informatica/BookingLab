@@ -12,45 +12,45 @@
                 columnHeaderFormat="timeGridWeek: {weekday: 'long', day: 'numeric', omitCommas: true}"
                 extender="window.ExtenderShowcase" timeZone="#{bookingController.serverTimeZone}"
                 clientTimeZone="#{bookingController.serverTimeZone}">
-                <p:ajax event="dateSelect" listener="#{bookingController.onDateSelect}" update="eventDetails"
-                    oncomplete="PF('eventDialog').show();" />
                 <p:ajax event="eventSelect" listener="#{bookingController.onEventSelect}" update="eventDetails"
                     oncomplete="PF('eventDialog').show();" />
             </p:schedule>
-            <p:dialog widgetVar="eventDialog" header="Detalle de reserva">
 
-                <h:panelGrid id="eventDetails" columns="2">
-                    <p:linkButton value="Regresar" outcome="index.xhtml"
-                        styleClass="btn-link ui-button-raised ui-button-secondary mt-5" />
-                    <p:outputLabel for="subject" value="Clase:" />
-                    <p:inputText id="subject" value="#{bookingController.event.title}" required="true"
-                        placeholder="Asignatura-Grupo" />
-                    <p:outputLabel for="teacher" value="Profesor" />
-                    <p:inputText id="teacher" placeholder="Nombre" required="true" />
-                    <p:outputLabel for="observation" value="Observación:" />
-                    <div class="flex flex-column">
-                        <p:inputTextarea id="observation" rows="5" cols="30" counter="characters" maxlength="300"
-                            placeholder="Observaciones" counterTemplate="{0} caracteres restantes"
-                            value="#{bookingController.event.description}" />
-                        <h:outputText id="characters" class="block" />
-                    </div>
-                    <p:outputLabel for="from" value="Inicio:" />
+            <p:dialog widgetVar="eventDialog" header="Detalle de reserva">
+                <h:panelGrid id="eventDetails" columns="2" >
+                    <p:outputLabel for="laboratory" value="Laboratorio:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
+                    <p:selectOneMenu id="laboratory" styleClass="text-500" value="#{bookingController.booking.laboratory}" >
+                        <f:selectItem itemLabel="Seleccionar Laboratorio" itemValue=""/>
+                        <f:selectItems value="#{bookingController.laboratories}" var="lab" 
+                                itemValue="#{lab}" itemLabel="#{lab}" />
+                    </p:selectOneMenu>
+                    <p:outputLabel for="from" value="Inicio:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
                     <p:datePicker id="from" value="#{bookingController.event.startDate}" pattern="dd/MM/yyyy"
-                        showTime="true" hourFormat="12" stepMinute="30" />
-                    <p:outputLabel for="to" value="Fin:" />
+                        showTime="true" hourFormat="12" stepMinute="30"/>
+                    <p:outputLabel for="to" value="Fin:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
                     <p:datePicker id="to" value="#{bookingController.event.endDate}" pattern="dd/MM/yyyy"
                         showTime="true" hourFormat="12" stepMinute="30" />
                 </h:panelGrid>
-                <div class="flex justify-content-between mt-3">
-                    <p:commandButton type="reset" value="Restablecer" styleClass="font-bold ui-button-outlined" />
-                    <p:commandButton value="Eliminar" styleClass="ui-button-danger"
+                <div class="flex mt-3 gap-2 flex-column">
+                    <p:commandButton icon="pi pi-save" type="submit" value="Guardar Reserva" action="#{bookingController.onEventUpdate}"
+                        oncomplete="PF('bookinglabschedule').update();PF('eventDialog').hide();" />
+                    <p:commandButton icon="pi pi-times" value="Cancelar Reserva" styleClass="ui-button-warning"
+                        process="@this" oncomplete="PF('bookinglabschedule').update();PF('cancelBookingDialog').show();">
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-trash" value="Eliminar Reserva" styleClass="ui-button-danger"
                         actionListener="#{bookingController.onEventDelete}" process="@this"
                         oncomplete="PF('bookinglabschedule').update();PF('eventDialog').hide();">
                     </p:commandButton>
-                    <p:commandButton type="submit" value="Guardar" action="#{bookingController.addEvent}"
-                        oncomplete="PF('bookinglabschedule').update();PF('eventDialog').hide();" />
                 </div>
             </p:dialog>
+            <p:confirmDialog widgetVar="cancelBookingDialog" showEffect="fade"
+                width="300" message="¿Desea cancelar la reserva?" header="Confirmar cancelacion" severity="warn">
+                <p:commandButton value="Si" icon="pi pi-check" process="@this"
+                    oncomplete="PF('cancelBookingDialog').hide();PF('eventDialog').hide();" 
+                    actionListener="#{bookingController.onEventCancel}" />
+                <p:commandButton value="No" type="button" styleClass="ui-button-secondary"
+                    icon="pi pi-times" onclick="PF('cancelBookingDialog').hide()" />
+            </p:confirmDialog>
 
             <p:linkButton value="Regresar" outcome="index.xhtml"
                 styleClass="btn-link ui-button-raised ui-button-secondary mt-5" />

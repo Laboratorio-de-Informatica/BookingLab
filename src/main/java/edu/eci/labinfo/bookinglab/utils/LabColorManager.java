@@ -12,14 +12,14 @@ public class LabColorManager {
 
     public LabColorManager() {
         this.labColors = new HashMap<>();
-        labColors.put(Laboratory.MULTIMEDIA, "#9CE3A9");
-        labColors.put(Laboratory.SOFTWARE, "#F5F983");
-        labColors.put(Laboratory.REDES, "#FE9554");
-        labColors.put(Laboratory.PLATAFORMAS, "#C785AD");
-        labColors.put(Laboratory.INTERACTIVA, "#9CC1E3");
-        labColors.put(Laboratory.FUNDAMENTOS, "#E3F6CE");
-        labColors.put(Laboratory.VIDEOJUEGOS, "#E2A9F3");
-        labColors.put(Laboratory.AULA_EDFI, "#DBB8A0");
+        labColors.put(Laboratory.MULTIMEDIA, "#FFC107");
+        labColors.put(Laboratory.SOFTWARE, "#FAB710");
+        labColors.put(Laboratory.REDES, "#FD7E14");
+        labColors.put(Laboratory.PLATAFORMAS, "#6F42C1");
+        labColors.put(Laboratory.INTERACTIVA, "#0DCAF0");
+        labColors.put(Laboratory.FUNDAMENTOS, "#198754");
+        labColors.put(Laboratory.VIDEOJUEGOS, "#D63384");
+        labColors.put(Laboratory.AULA_EDFI, "#20C997");
     }
 
     public static LabColorManager getInstance() {

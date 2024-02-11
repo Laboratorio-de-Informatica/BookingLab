@@ -38,7 +38,7 @@ public class BookingController {
 
     private ScheduleModel eventModel;
     private String serverTimeZone;
-    private ScheduleEvent<?> event;
+    private ScheduleEvent<Booking> event;
     private LocalTime minTime;
     private LocalTime maxTime;
     private List<String> laboratories;
@@ -83,6 +83,9 @@ public class BookingController {
                 .endDate(endDateTime)
                 .description(booking.getObservation())
                 .data(booking)
+                .overlapAllowed(true)
+                .resizable(false)
+                .draggable(false)
                 .backgroundColor(LabColorManager.getInstance().getColor(Laboratory.findByValue(booking.getLaboratory())))
                 .build();
         eventModel.addEvent(event);
@@ -93,34 +96,55 @@ public class BookingController {
         this.booking = new Booking();
     }
 
-    public void onEventSelect(SelectEvent<ScheduleEvent<?>> selectEvent) {
+    public void onEventSelect(SelectEvent<ScheduleEvent<Booking>> selectEvent) {
         event = selectEvent.getObject();
+        booking = event.getData();
         logger.info("Evento seleccionado");
     }
 
-    public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
-        event = DefaultScheduleEvent.builder()
-                .startDate(selectEvent.getObject())
-                .endDate(selectEvent.getObject().plusMinutes(90))
-                .description("sleep as long as you want")
-                .backgroundColor("#51A19F")
-                .build();
-        logger.info("Fecha seleccionada");
-    }
-
-    public void addEvent() {
-        if (event.getId() == null) {
-            eventModel.addEvent(event);
-        } else {
-            eventModel.updateEvent(event);
+    public Boolean onEventUpdate() {
+        try {
+            booking.setInitialTimeSlot(event.getStartDate().toLocalTime());
+            booking.setFinalTimeSlot(event.getEndDate().toLocalTime());
+            booking.setDate(event.getStartDate().toLocalDate());
+            eventModel.deleteEvent(event);
+            placeBookingEvent(booking);
+            bookingService.updateReservation(booking);
+            logger.info("Evento " + booking.getBookingId() + " actualizado");
+        } catch (BookingLabException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
+            primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
+            return false;
         }
-        event = new DefaultScheduleEvent<>();
-        logger.info("Evento agregado");
+        return true;
     }
 
-    public void onEventDelete() {
+    public Boolean onEventCancel() {
+        try {
+            Booking bookingToCancel = event.getData();
+            bookingToCancel.setCanceled(true);
+            bookingService.updateReservation(bookingToCancel);
+            logger.info("Evento " + bookingToCancel.getBookingId() + " cancelado");
+        } catch (BookingLabException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
+            primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean onEventDelete() {
+        Booking bookingToDelete = (Booking) event.getData();
+        bookingToDelete.setCanceled(true);
+        bookingService.deleteReservation(bookingToDelete);
+        logger.info("Evento " + bookingToDelete.getBookingId() + " eliminado");
         eventModel.deleteEvent(event);
-        logger.info("Evento eliminado");
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Evento eliminado"));
+        primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
+        return true;
     }
 
     public Boolean saveReservation() {
