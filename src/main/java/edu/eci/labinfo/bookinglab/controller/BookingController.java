@@ -64,7 +64,6 @@ public class BookingController {
         eventModel = new DefaultScheduleModel();
         event = new DefaultScheduleEvent<>();
         logger = LoggerFactory.getLogger(BookingController.class);
-        loadReservations();
     }
 
     private void loadReservations() {
