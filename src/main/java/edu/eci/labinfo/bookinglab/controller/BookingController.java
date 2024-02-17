@@ -43,6 +43,8 @@ public class BookingController {
     private LocalTime maxTime;
     private List<String> laboratories;
     private Booking booking;
+    
+    private String selectedLaboratory;
     Logger logger;
 
     @Autowired
@@ -132,6 +134,19 @@ public class BookingController {
             return false;
         }
         return true;
+    }
+
+    public Boolean onLaboratorySelect() {
+        logger.info("Laboratorio seleccionado" + selectedLaboratory);
+        eventModel.clear();
+        if (selectedLaboratory != null) {
+            List<Booking> bookings = bookingService.getReservationByLaboratory(selectedLaboratory);
+            for (Booking booking : bookings) {
+                placeBookingEvent(booking);
+            }
+            return true;
+        }
+        return false;
     }
 
     public Boolean onEventDelete() {

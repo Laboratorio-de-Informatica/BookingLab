@@ -8,7 +8,7 @@
     template="/template.xhtml">
     <ui:define name="content"> 
         <div class="flex p-8 align-items-center flex-column">
-            <p:outputPanel id="reservation" class="surface-section w-full" rendered="#{not empty bookingController.booking}">
+            <p:outputPanel id="reservation" styleClass="w-full" rendered="#{not empty bookingController.booking}">
                 <div class="font-medium text-3xl text-900 mb-3">Información de Reserva</div>
                 <div class="text-500 mb-5">Ingrese los datos para crear una reserva.</div>
                 <ul class="list-none p-0 m-0">
@@ -58,7 +58,7 @@
                                 itemValue="#{day}" itemLabel="#{durationController.getDisplayNameOfDayOfWeek(day)}" />
                                 <p:ajax event="change" update="summaryMessage" listener="#{durationController.updateSummaryMessage}"/>
                             </p:selectManyButton>
-                            <p:outputLabel id="summaryMessage" styleClass="text-red-500 font-bold ml-2">
+                            <p:outputLabel id="summaryMessage" styleClass=" font-bold ml-2" style="color: #990000;">
                                 Este evento #{durationController.summaryMessage}
                             </p:outputLabel>
                         </p:outputPanel>
@@ -69,7 +69,7 @@
                             upButtonStyleClass="ui-button-success" downButtonStyleClass="ui-button-danger" min="1">
                             <p:ajax event="change" update="durationMessage" />
                         </p:spinner>
-                        <p:outputLabel id="durationMessage" styleClass="text-red-500 font-bold ml-2">
+                        <p:outputLabel id="durationMessage" styleClass="font-bold ml-2" style="color: #990000;">
                             Este evento dura #{durationController.duration} #{durationController.duration == 1 ? 'vez' : 'veces'} en total
                         </p:outputLabel>
                     </li>
