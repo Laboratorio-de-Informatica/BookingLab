@@ -3,20 +3,24 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:f="jakarta.faces.core" xmlns:h="jakarta.faces.html"
     xmlns:p="http://primefaces.org/ui" template="/template.xhtml">
+    <f:view>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{bookingController.loadReservationsDB}" />
+        </f:metadata>
+    </f:view>
     <ui:define name="content">
-        <div class="p-8 flex justify-content-center flex-column">
+        <div class="px-8 flex justify-content-center flex-column">
             <h1>Consulta</h1>
-            <div class="card">
-                <h:form>
-                    <p:commandButton value="General" icon="pi pi-home" styleClass="mr-2"
-                        oncomplete="PF('labSearch').show();" />
-                    <p:commandButton value="Por Laboratorio" icon="pi pi-building"
-                        styleClass="mr-2 ui-button-outlined" />
-                    <p:commandButton value="Por Profesor" icon="pi pi-users" styleClass="mr-2 ui-button-outlined" />
-                    <p:commandButton value="Por Materia" icon="pi pi-book" styleClass="ui-button-outlined" />
-                </h:form>
+            <div class="card mb-5">
+                <p:commandButton value="General" icon="pi pi-home" actionListener="#{bookingController.loadReservations()}" 
+                    styleClass="mr-2" process="@this" update="@this" />
+                <p:commandButton value="Por Laboratorio" icon="pi pi-building" update="@this"
+                    styleClass="mr-2 ui-button-outlined" oncomplete="PF('labSearch').show();" />
+                <p:commandButton value="Por Profesor" icon="pi pi-users" update="@this"
+                    styleClass="mr-2 ui-button-outlined" oncomplete="PF('teacherSearch').show();" />
+                <p:commandButton value="Por Materia" icon="pi pi-book" update="@this"
+                    styleClass="mr-2 ui-button-outlined" oncomplete="PF('courseSearch').show();" />
             </div>
-            <div style="height: 20px;"></div>
 
             <p:schedule id="schedule" value="#{bookingController.eventModel}" widgetVar="bookinglabschedule"
                 view="timeGridWeek" locale="es_CO" slotDuration="01:30:00" minTime="07:00:00" maxTime="19:00:00"
@@ -30,20 +34,25 @@
 
 
             <p:dialog widgetVar="eventDialog" header="Detalle de reserva">
-                <h:panelGrid id="eventDetails" columns="2" >
-                    <p:outputLabel for="laboratory" value="Laboratorio:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
-                    <p:selectOneMenu id="laboratory" styleClass="text-500" value="#{bookingController.booking.laboratory}" >
-                        <f:selectItem itemLabel="Seleccionar Laboratorio" itemValue=""/>
-                        <f:selectItems value="#{bookingController.laboratories}" var="lab" 
-                                itemValue="#{lab}" itemLabel="#{lab}" />
-                    </p:selectOneMenu>
-                    <p:outputLabel for="from" value="Inicio:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
-                    <p:datePicker id="from" value="#{bookingController.event.startDate}" pattern="dd/MM/yyyy"
-                        showTime="true" hourFormat="12" stepMinute="30"/>
-                    <p:outputLabel for="to" value="Fin:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
-                    <p:datePicker id="to" value="#{bookingController.event.endDate}" pattern="dd/MM/yyyy"
-                        showTime="true" hourFormat="12" stepMinute="30" />
-                </h:panelGrid>
+                <p:outputPanel rendered="#{not empty bookingController.booking}">
+                    <h:panelGrid id="eventDetails" columns="2" >
+                        <p:outputLabel for="laboratory" value="Laboratorio:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
+                        <p:selectOneMenu id="laboratory" styleClass="text-500" value="#{bookingController.booking.laboratory}" >
+                            <f:selectItem itemLabel="Seleccionar Laboratorio" itemValue=""/>
+                            <f:selectItems value="#{bookingController.laboratories}" var="lab" 
+                                    itemValue="#{lab}" itemLabel="#{lab}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel for="from" value="Inicio:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
+                        <p:datePicker id="from" value="#{bookingController.event.startDate}" pattern="dd/MM/yyyy"
+                            showTime="true" hourFormat="12" stepMinute="30"/>
+                        <p:outputLabel for="to" value="Fin:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
+                        <p:datePicker id="to" value="#{bookingController.event.endDate}" pattern="dd/MM/yyyy"
+                            showTime="true" hourFormat="12" stepMinute="30" />
+                        <p:outputLabel for="observation" value="Observaciones" styleClass="text-500 w-6 md:w-2 font-medium" />
+                        <p:inputTextarea id="observation" value="#{bookingController.booking.observation}"/>
+                        <h:outputText id="characters" class="block" />
+                    </h:panelGrid>
+                </p:outputPanel>
                 <div class="flex mt-3 gap-2 flex-column">
                     <p:commandButton icon="pi pi-save" type="submit" value="Guardar Reserva" action="#{bookingController.onEventUpdate}"
                         oncomplete="PF('bookinglabschedule').update();PF('eventDialog').hide();" />
@@ -56,6 +65,8 @@
                     </p:commandButton>
                 </div>
             </p:dialog>
+
+
             <p:confirmDialog widgetVar="cancelBookingDialog" showEffect="fade"
                 width="300" message="¿Desea cancelar la reserva?" header="Confirmar cancelacion" severity="warn">
                 <p:commandButton value="Si" icon="pi pi-check" process="@this"
@@ -76,6 +87,21 @@
                 <p:commandButton value="Consultar" actionListener="#{bookingController.onLaboratorySelect}" process="@this"
                     update="schedule :form" oncomplete="PF('labSearch').hide();"/>
             </p:dialog>
+
+            <p:dialog id="teacherwidget" widgetVar="teacherSearch" header="Indique el profesor">
+                <p:inputText value="#{bookingController.teacherToSearch}"/>
+                <p:commandButton value="Consultar" actionListener="#{bookingController.onTeacherSearch}" process="teacherwidget @this"
+                    update="schedule :form" oncomplete="PF('teacherSearch').hide();"/>
+            </p:dialog>
+
+            <p:dialog id="coursewidget" widgetVar="courseSearch" header="Indique la materia">
+                <p:inputText value="#{bookingController.courseToSearch}"/>
+                <p:commandButton value="Consultar" actionListener="#{bookingController.onCourseSearch}" process="coursewidget @this"
+                    update="schedule :form" oncomplete="PF('courseSearch').hide();"/>
+            </p:dialog>
+
+
+
 
             <p:linkButton value="Regresar" outcome="index.xhtml"
                 styleClass="btn-link ui-button-raised ui-button-secondary mt-5" />

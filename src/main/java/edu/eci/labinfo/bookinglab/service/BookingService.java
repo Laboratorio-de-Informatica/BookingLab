@@ -50,6 +50,10 @@ public class BookingService {
         return bookingRepository.findByLaboratory(laboratory);
     }
 
+    public List<Booking> getReservationByCourse(String course) {
+        return bookingRepository.findByCourse(course);
+    }
+
     public Booking updateReservation(Booking booking) throws BookingLabException {
         if (bookingRepository.findById(booking.getBookingId()).isEmpty()) {
             throw new BookingLabException(BookingLabException.RESERVATION_NOT_FOUND);

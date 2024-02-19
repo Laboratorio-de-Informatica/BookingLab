@@ -18,4 +18,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByLaboratory(String laboratory);
 
+    List<Booking> findByCourse(String course);
+
 }

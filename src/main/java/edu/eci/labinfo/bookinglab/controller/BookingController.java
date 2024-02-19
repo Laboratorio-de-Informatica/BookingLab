@@ -43,8 +43,11 @@ public class BookingController {
     private LocalTime maxTime;
     private List<String> laboratories;
     private Booking booking;
+    private Boolean firstLoad;
     
     private String selectedLaboratory;
+    private String teacherToSearch;
+    private String courseToSearch;
     Logger logger;
 
     @Autowired
@@ -60,6 +63,7 @@ public class BookingController {
     @PostConstruct
     public void init() {
         laboratories = bookingService.getLaboratories();
+        firstLoad = true;
         minTime = LocalTime.of(7, 0);
         maxTime = LocalTime.of(19, 0);
         serverTimeZone = ZoneId.systemDefault().toString();
@@ -68,11 +72,21 @@ public class BookingController {
         logger = LoggerFactory.getLogger(BookingController.class);
     }
 
-    private void loadReservations() {
+    public void loadReservationsDB() {
+        if (firstLoad) {
+            loadReservations();
+            firstLoad = false;
+        }
+    }
+
+    public void loadReservations() {
+        eventModel.clear();
         List<Booking> bookings = bookingService.getAllReservations();
+        logger.info("Cargando reservas");
         for (Booking booking : bookings) {
             placeBookingEvent(booking);
         }
+        primeFacesWrapper.current().ajax().update("form:schedule");
     }
 
     private void placeBookingEvent(Booking booking) {
@@ -137,10 +151,39 @@ public class BookingController {
     }
 
     public Boolean onLaboratorySelect() {
-        logger.info("Laboratorio seleccionado" + selectedLaboratory);
+        logger.info("Laboratorio seleccionado " + selectedLaboratory);
         eventModel.clear();
-        if (selectedLaboratory != null) {
-            List<Booking> bookings = bookingService.getReservationByLaboratory(selectedLaboratory);
+        List<Booking> bookings = bookingService.getReservationByLaboratory(selectedLaboratory);
+        selectedLaboratory = null;
+        if (bookings.size() > 0) {
+            for (Booking booking : bookings) {
+                placeBookingEvent(booking);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean onTeacherSearch() {
+        logger.info("Profesor a buscar " + teacherToSearch);
+        eventModel.clear();
+        List<Booking> bookings = bookingService.getReservationByTeacher(teacherToSearch);
+        teacherToSearch = null;
+        if (bookings.size() > 0) {
+            for (Booking booking : bookings) {
+                placeBookingEvent(booking);
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    public Boolean onCourseSearch() {
+        logger.info("Curso a buscar " + courseToSearch);
+        eventModel.clear();
+        List<Booking> bookings = bookingService.getReservationByCourse(courseToSearch);
+        courseToSearch = null;
+        if (bookings.size() > 0) {
             for (Booking booking : bookings) {
                 placeBookingEvent(booking);
             }
