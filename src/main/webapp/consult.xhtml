@@ -77,30 +77,34 @@
             </p:confirmDialog>
 
             
-            <p:dialog widgetVar="labSearch" header="Seleccione el laboratorio">
+            <p:dialog widgetVar="labSearch" header="Seleccione el laboratorio" draggable="false" resizable="false">
                 <p:selectOneMenu value="#{bookingController.selectedLaboratory}" >
                     <f:selectItem itemLabel="Seleccionar Laboratorio" itemValue="" />
                     <f:selectItems value="#{bookingController.laboratories}" var="lab" 
                                 itemValue="#{lab}" itemLabel="#{lab}" />
                     <p:ajax event="valueChange" update="form:schedule"/>
                 </p:selectOneMenu>
+                <div style="height: 20px;"></div>
                 <p:commandButton value="Consultar" actionListener="#{bookingController.onLaboratorySelect}" process="@this"
                     update="schedule :form" oncomplete="PF('labSearch').hide();"/>
             </p:dialog>
 
-            <p:dialog id="teacherwidget" widgetVar="teacherSearch" header="Indique el profesor">
+            <p:dialog id="teacherwidget" widgetVar="teacherSearch" header="Indique el profesor" draggable="false" resizable="false">
                 <p:inputText value="#{bookingController.teacherToSearch}"/>
+                <div style="height: 20px;"></div>
                 <p:commandButton value="Consultar" actionListener="#{bookingController.onTeacherSearch}" process="teacherwidget @this"
                     update="schedule :form" oncomplete="PF('teacherSearch').hide();"/>
             </p:dialog>
 
-            <p:dialog id="coursewidget" widgetVar="courseSearch" header="Indique la materia">
+            <p:dialog id="coursewidget" widgetVar="courseSearch" header="Indique la materia" draggable="false" resizable="false">
                 <p:inputText value="#{bookingController.courseToSearch}"/>
+                <div style="height: 20px;"></div>
                 <p:commandButton value="Consultar" actionListener="#{bookingController.onCourseSearch}" process="coursewidget @this"
                     update="schedule :form" oncomplete="PF('courseSearch').hide();"/>
             </p:dialog>
 
             <div>
+                <div style="height: 20px;"></div>
                 <p:commandButton value="Exportar a PDF" styleClass="mr-2 mb-2" actionListener="#{bookingController.exportToPDF}" process="@this" update="@this" />
             </div>
             <p:linkButton value="Regresar" outcome="index.xhtml"
