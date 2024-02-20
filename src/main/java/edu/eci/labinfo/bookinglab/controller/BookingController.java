@@ -1,12 +1,19 @@
 package edu.eci.labinfo.bookinglab.controller;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+
+
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.Document;
 
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -29,6 +36,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 
 @Component
@@ -90,6 +98,7 @@ public class BookingController {
     }
 
     private void placeBookingEvent(Booking booking) {
+        System.out.println(booking);
         LocalDateTime startDateTime = LocalDateTime.of(booking.getDate(), booking.getInitialTimeSlot());
         LocalDateTime endDateTime = LocalDateTime.of(booking.getDate(), booking.getFinalTimeSlot());
         DefaultScheduleEvent<?> event = DefaultScheduleEvent.builder()
@@ -247,6 +256,27 @@ public class BookingController {
         bookingToSave.setDate(LocalDate.now().with(day));
         bookingToSave.setDate(bookingToSave.getDate().plusWeeks(repetitions * i));
         return bookingToSave;
+    }
+
+    public void exportToPDF() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
+    
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=\"schedule.pdf\"");
+    
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, response.getOutputStream()); // Aquí pasamos el OutputStream directamente
+            document.open();
+            document.add(new Paragraph("Contenido a exportar")); // Puedes personalizar este contenido según tus necesidades
+            document.close();
+    
+            facesContext.responseComplete();
+        } catch (IOException | DocumentException e) {
+            e.printStackTrace(); // Manejo de errores, puedes personalizarlo según tus necesidades
+        }
     }
 
 }
