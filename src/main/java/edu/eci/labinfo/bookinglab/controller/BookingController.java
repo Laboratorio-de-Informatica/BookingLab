@@ -1,7 +1,12 @@
 package edu.eci.labinfo.bookinglab.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +16,9 @@ import java.util.List;
 
 
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Document;
 
@@ -259,24 +266,70 @@ public class BookingController {
     }
 
     public void exportToPDF() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
-    
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=\"schedule.pdf\"");
-    
+        String directorioDestino = "C:/Users/rescate/Downloads"; // Cambia esto por tu directorio de destino
+        String nombreArchivo = "schedule.pdf"; // Nombre del archivo PDF
         try {
-            Document document = new Document();
-            PdfWriter.getInstance(document, response.getOutputStream()); // Aquí pasamos el OutputStream directamente
-            document.open();
-            document.add(new Paragraph("Contenido a exportar")); // Puedes personalizar este contenido según tus necesidades
-            document.close();
+            // Si el directorio de destino no existe, créalo
+            if (!Files.exists(Paths.get(directorioDestino))) {
+                Files.createDirectories(Paths.get(directorioDestino));
+            }
     
-            facesContext.responseComplete();
-        } catch (IOException | DocumentException e) {
-            e.printStackTrace(); // Manejo de errores, puedes personalizarlo según tus necesidades
+            String rutaCompleta = Paths.get(directorioDestino, nombreArchivo).toString();
+    
+            try (FileOutputStream outputStream = new FileOutputStream(rutaCompleta)) {
+                Document document = new Document(PageSize.A4.rotate());
+                PdfWriter.getInstance(document, outputStream);
+                document.open();
+    
+                PdfPTable table = createScheduleTable();
+                document.add(table);
+                document.close();
+    
+                System.out.println("PDF guardado en: " + rutaCompleta);
+            } catch (DocumentException | IOException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    private PdfPTable createScheduleTable() {
+        PdfPTable table = new PdfPTable(laboratories.size() + 1); // Una columna adicional para las horas
+        table.addCell("Horas");
+        for (String laboratory : laboratories) {
+            table.addCell(laboratory);
+        }
+
+        LocalTime currentTime = minTime;
+
+        while (currentTime.isBefore(maxTime)) {
+            table.addCell(currentTime.toString()); 
+            for (String laboratory : laboratories) {
+                String bookingInfo = getBookingInfo(currentTime, laboratory);
+                table.addCell(bookingInfo);
+            }
+            currentTime = currentTime.plusMinutes(90); // Avanza 1.5 horas
+        }
+
+        return table;
+    }
+
+    private String getBookingInfo(LocalTime time, String laboratory) {
+        List<Booking> bookings = bookingService.getReservationByLaboratory(laboratory);
+        StringBuilder bookingInfo = new StringBuilder();
+    
+        for (Booking booking : bookings) {
+            // Verificar si la hora de inicio de la booking coincide con la hora actual
+            if (booking.getInitialTimeSlot().equals(time)) {
+                bookingInfo.append(booking.getCourse()).append(" - ").append(booking.getTeacher());
+
+                bookingInfo.append("\n"); // Agregar un salto de línea para separar las bookings
+            }
+        }
+        return bookingInfo.toString();
+    }
+    
+
 
 }
