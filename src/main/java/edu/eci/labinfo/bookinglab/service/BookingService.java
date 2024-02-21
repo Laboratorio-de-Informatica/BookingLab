@@ -74,4 +74,8 @@ public class BookingService {
         return Laboratory.getAllLaboratories();
     }
 
+    public List<Booking> getReservationByDay(DayOfWeek day) {
+        return bookingRepository.findByDay(day);
+    }
+
 }

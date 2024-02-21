@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 
@@ -265,66 +266,82 @@ public class BookingController {
         return bookingToSave;
     }
 
+
+
     public void exportToPDF() {
-        String directorioDestino = "C:/Users/rescate/Downloads"; // Cambia esto por tu directorio de destino
-        String nombreArchivo = "schedule.pdf"; // Nombre del archivo PDF
-        try {
-            // Si el directorio de destino no existe, créalo
-            if (!Files.exists(Paths.get(directorioDestino))) {
-                Files.createDirectories(Paths.get(directorioDestino));
-            }
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)); // Cambiado a sábado
     
-            String rutaCompleta = Paths.get(directorioDestino, nombreArchivo).toString();
-    
-            try (FileOutputStream outputStream = new FileOutputStream(rutaCompleta)) {
+        for (LocalDate date = startOfWeek; !date.isAfter(endOfWeek); date = date.plusDays(1)) {
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 Document document = new Document(PageSize.A4.rotate());
                 PdfWriter.getInstance(document, outputStream);
                 document.open();
     
-                PdfPTable table = createScheduleTable();
+                PdfPTable table = createScheduleTable(date);
                 document.add(table);
                 document.close();
     
-                System.out.println("PDF guardado en: " + rutaCompleta);
+                // Guardar el PDF en un archivo con el nombre correspondiente al día
+                String fileName = "schedule_" + date.getDayOfWeek().toString().toLowerCase() + ".pdf";
+                String directoryPath = "C:/Users/rescate/Downloads";; // Cambia esto por la ruta de tu directorio de destino
+                String filePath = Paths.get(directoryPath, fileName).toString();
+    
+                try (FileOutputStream fileOutputStream = new FileOutputStream(filePath)) {
+                    fileOutputStream.write(outputStream.toByteArray());
+                }
+    
+                System.out.println("PDF guardado en: " + filePath);
             } catch (DocumentException | IOException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private PdfPTable createScheduleTable() {
+    private PdfPTable createScheduleTable(LocalDate date) {
+        // Obtener las reservas para el día específico
+        List<Booking> bookings = bookingService.getReservationByDay(date.getDayOfWeek());
+    
+        // Crear la tabla con las reservas para ese día
         PdfPTable table = new PdfPTable(laboratories.size() + 1); // Una columna adicional para las horas
         table.addCell("Horas");
         for (String laboratory : laboratories) {
             table.addCell(laboratory);
         }
-
+    
         LocalTime currentTime = minTime;
-
+    
         while (currentTime.isBefore(maxTime)) {
-            table.addCell(currentTime.toString()); 
+            table.addCell(currentTime.toString());
             for (String laboratory : laboratories) {
-                String bookingInfo = getBookingInfo(currentTime, laboratory);
+                String bookingInfo = getBookingInfo(currentTime, laboratory, bookings);
                 table.addCell(bookingInfo);
             }
             currentTime = currentTime.plusMinutes(90); // Avanza 1.5 horas
         }
-
+    
         return table;
     }
 
-    private String getBookingInfo(LocalTime time, String laboratory) {
-        List<Booking> bookings = bookingService.getReservationByLaboratory(laboratory);
+    private String getBookingInfo(LocalTime time, String laboratory, List<Booking> bookings) {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+    
         StringBuilder bookingInfo = new StringBuilder();
     
         for (Booking booking : bookings) {
-            // Verificar si la hora de inicio de la booking coincide con la hora actual
-            if (booking.getInitialTimeSlot().equals(time)) {
+            LocalDateTime startDateTime = LocalDateTime.of(booking.getDate(), booking.getInitialTimeSlot());
+    
+            // Verificar si la reserva está en el laboratorio y hora específicos
+            // y si está dentro de la semana actual
+            if (booking.getLaboratory().equals(laboratory) &&
+                startDateTime.toLocalTime().equals(time) &&
+                startDateTime.toLocalDate().isAfter(startOfWeek.minusDays(1)) && // Incluye el inicio del lunes
+                startDateTime.toLocalDate().isBefore(endOfWeek.plusDays(1))) { // Incluye el final del domingo
                 bookingInfo.append(booking.getCourse()).append(" - ").append(booking.getTeacher());
-
-                bookingInfo.append("\n"); // Agregar un salto de línea para separar las bookings
+                bookingInfo.append("\n"); // Agregar un salto de línea para separar las reservas
             }
         }
         return bookingInfo.toString();
