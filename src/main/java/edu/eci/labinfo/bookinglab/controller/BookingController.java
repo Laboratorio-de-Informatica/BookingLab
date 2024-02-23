@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -301,9 +302,7 @@ public class BookingController {
                 PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
                 document.open();
 
-
                 PdfImportedPage page = writer.getImportedPage(reader, 1);
-
                 // Agregar la página de la plantilla al nuevo documento
                 PdfContentByte contentByte = writer.getDirectContent();
                 contentByte.addTemplate(page, 0, 0);
@@ -316,7 +315,7 @@ public class BookingController {
                 float pageWidth = document.getPageSize().getWidth();
 
                 // Calcular el ancho de la tabla como un porcentaje del ancho de la página
-                float tableWidthPercentage = 80; // Porcentaje del ancho de la página que ocupará la tabla
+                float tableWidthPercentage = 90; // Porcentaje del ancho de la página que ocupará la tabla
                 table.setWidthPercentage(tableWidthPercentage);
 
                 // Calcular el ancho de la tabla en puntos (1 punto = 1/72 pulgadas)
@@ -326,8 +325,11 @@ public class BookingController {
                 table.setTotalWidth(tableWidth);
 
                 // Escribir la tabla en el documento
-                table.writeSelectedRows(0, -1, 50, 600, contentByte);
-
+                table.writeSelectedRows(0, -1, 80, 600, contentByte);
+                
+                Paragraph title = new Paragraph("Día de la semana: " + date.getDayOfWeek().toString(), FontFactory.getFont("Bebas Neue", 30, Font.BOLD));
+                title.setAlignment(Element.ALIGN_CENTER);
+                document.add(title);
 
                 // Cerrar el documento
                 document.close();
@@ -339,16 +341,22 @@ public class BookingController {
         }
     }
 
-
-
-    private PdfPTable createScheduleTable(LocalDate date) {
+    private PdfPTable createScheduleTable(LocalDate date) throws DocumentException {
         // Obtener las reservas para el día específico
         List<Booking> bookings = bookingService.getReservationByDay(date.getDayOfWeek());
-    
+
         // Crear la tabla con las reservas para ese día
         PdfPTable table = new PdfPTable(laboratories.size() + 1); // Una columna adicional para las horas
         table.setWidthPercentage(100); // Ancho de la tabla al 100% de la página
         table.getDefaultCell().setPadding(5); // Padding de las celdas
+    
+        // Establecer anchos personalizados para las columnas
+        float[] columnWidths = new float[laboratories.size() + 1];
+        columnWidths[0] = 300f; // Anchura de la primera columna para las horas
+        for (int i = 1; i < columnWidths.length; i++) {
+            columnWidths[i] = 250f; // Anchura de las columnas de los laboratorios
+        }
+        table.setWidths(columnWidths);
     
         // Establecer estilos para las celdas de los laboratorios y horas
         PdfPCell headerCell = new PdfPCell();
@@ -359,7 +367,7 @@ public class BookingController {
         headerCell.setPaddingBottom(5);
         headerCell.setPaddingTop(5);
         Font headerFont = FontFactory.getFont("Bebas Neue", 25, Font.BOLD, BaseColor.WHITE); // Fuente "Bebas Neue", tamaño 28, color blanco, negrita
-        headerCell.setPhrase(new Phrase("Laboratorios", headerFont));
+        headerCell.setPhrase(new Phrase("Hora", headerFont));
         table.addCell(headerCell);
     
         for (LocalTime currentTime = LocalTime.of(7, 0); currentTime.isBefore(LocalTime.of(19, 0)); currentTime = currentTime.plusMinutes(90)) {
@@ -393,11 +401,9 @@ public class BookingController {
                 PdfPCell infoCell = new PdfPCell();
                 infoCell.setBackgroundColor(new BaseColor(213, 227, 207)); // Verde claro casi blanco
                 infoCell.setBorderColor(BaseColor.GRAY); // Color de borde gris
-                infoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                infoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 infoCell.setPaddingBottom(5);
                 infoCell.setPaddingTop(5);
-                Font infoFont = FontFactory.getFont("Bebas Neue", 25, Font.BOLD, BaseColor.WHITE); // Fuente "Bebas Neue", tamaño 28, color blanco, negrita
+                Font infoFont = FontFactory.getFont("Bebas Neue", 20, BaseColor.BLACK); // Fuente "Bebas Neue", tamaño 28, color blanco, negrita
                 infoCell.setPhrase(new Phrase(bookingInfo, infoFont));
                 table.addCell(infoCell);
             }
@@ -406,8 +412,6 @@ public class BookingController {
         return table;
     }
     
-
-
     private String getBookingInfo(LocalTime time, String laboratory, List<Booking> bookings) {
         LocalDate today = LocalDate.now();
         LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
