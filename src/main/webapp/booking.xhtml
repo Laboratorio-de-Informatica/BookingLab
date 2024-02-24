@@ -30,12 +30,12 @@
                     </li>
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <p:outputLabel for="timeslotmin" value="Hora inicial" styleClass="text-500 w-6 md:w-2 font-medium" />
-                        <p:datePicker id="timeslotmin" value="#{bookingController.booking.initialTimeSlot}"
+                        <p:datePicker id="timeslotmin" value="#{bookingController.booking.initialTimeSlot}" stepMinute="30"
                         mindate="#{bookingController.minTime}" maxdate="#{bookingController.maxTime}" timeOnly="true" pattern="HH:mm" hourFormat="12" required="true"/>
                     </li>
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <p:outputLabel for="timeslotmax" value="Hora final" styleClass="text-500 w-6 md:w-2 font-medium" />
-                        <p:datePicker id="timeslotmax" value="#{bookingController.booking.finalTimeSlot}"
+                        <p:datePicker id="timeslotmax" value="#{bookingController.booking.finalTimeSlot}" stepMinute="30"
                             mindate="#{bookingController.minTime}" maxdate="#{bookingController.maxTime}"  timeOnly="true" pattern="HH:mm" hourFormat="12" required="true" />
                     </li>
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
