@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonSerializable.Base;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 
+import edu.eci.labinfo.bookinglab.service.MailService;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -82,6 +83,8 @@ public class BookingController {
     BookingService bookingService;
     @Autowired
     DurationController durationController;
+    @Autowired
+    MailService mailService;
     @Autowired
     private PrimeFacesWrapper primeFacesWrapper;
 
@@ -243,6 +246,10 @@ public class BookingController {
                     Booking bookingToSave = makeBooking(repetitions, i, day);
                     bookingService.createReservation(bookingToSave);
                     placeBookingEvent(bookingToSave);
+                    if (false) {
+                        // set the email and subject
+                        mailService.sendMail(null,null,bookingToSave);
+                    }
                 } catch (BookingLabException e) {
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
