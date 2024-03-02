@@ -9,17 +9,25 @@
         </f:metadata>
     </f:view>
     <ui:define name="content">
-        <div class="px-8 flex justify-content-center flex-column">
+        <div class="p-4 h-screen">
             <h1>Consulta</h1>
-            <div class="card mb-5">
-                <p:commandButton value="General" icon="pi pi-home" actionListener="#{bookingController.loadReservations()}" 
-                    styleClass="mr-2" process="@this" update="@this" />
-                <p:commandButton value="Por Laboratorio" icon="pi pi-building" update="@this"
-                    styleClass="mr-2 ui-button-outlined" oncomplete="PF('labSearch').show();" />
-                <p:commandButton value="Por Profesor" icon="pi pi-users" update="@this"
-                    styleClass="mr-2 ui-button-outlined" oncomplete="PF('teacherSearch').show();" />
-                <p:commandButton value="Por Materia" icon="pi pi-book" update="@this"
-                    styleClass="mr-2 ui-button-outlined" oncomplete="PF('courseSearch').show();" />
+            <div class="flex justify-content-between mb-5">
+                <div>
+                    <p:commandButton value="General" icon="pi pi-home" actionListener="#{bookingController.loadReservations()}" 
+                        styleClass="mr-2 ui-button-info" process="@this" update="@this" />
+                    <p:commandButton value="Por Laboratorio" icon="pi pi-building" update="@this"
+                        styleClass="mr-2 ui-button-info ui-button-outlined" oncomplete="PF('labSearch').show();" />
+                    <p:commandButton value="Por Profesor" icon="pi pi-users" update="@this"
+                        styleClass="mr-2 ui-button-info ui-button-outlined" oncomplete="PF('teacherSearch').show();" />
+                    <p:commandButton value="Por Materia" icon="pi pi-book" update="@this"
+                        styleClass="mr-2 ui-button-info ui-button-outlined" oncomplete="PF('courseSearch').show();" />
+                </div>
+                <div>
+                    <p:commandButton value="Exportar" styleClass="mr-2 ui-button-help" icon="pi pi-file-export"
+                    actionListener="#{bookingController.scheduleExport}" process="@this" update="@this" />
+                    <p:linkButton value="Regresar" outcome="index.xhtml" icon="pi pi-backward"
+                        styleClass="btn-link ui-button-danger ui-button-secondary" />
+                </div>
             </div>
 
             <p:schedule id="schedule" value="#{bookingController.eventModel}" widgetVar="bookinglabschedule"
@@ -34,10 +42,10 @@
 
 
             <p:dialog widgetVar="eventDialog" header="Detalle de reserva">
-                <p:outputPanel rendered="#{not empty bookingController.booking}">
+                <p:outputPanel rendered="#{not empty bookingController.selectedBooking}">
                     <h:panelGrid id="eventDetails" columns="2" >
                         <p:outputLabel for="laboratory" value="Laboratorio:" styleClass="text-500 w-6 md:w-2 font-medium mr-3"/>
-                        <p:selectOneMenu id="laboratory" styleClass="text-500" value="#{bookingController.booking.laboratory}" >
+                        <p:selectOneMenu id="laboratory" styleClass="text-500" value="#{bookingController.selectedBooking.laboratory}" >
                             <f:selectItem itemLabel="Seleccionar Laboratorio" itemValue=""/>
                             <f:selectItems value="#{bookingController.laboratories}" var="lab" 
                                     itemValue="#{lab}" itemLabel="#{lab}" />
@@ -49,7 +57,7 @@
                         <p:datePicker id="to" value="#{bookingController.event.endDate}" pattern="dd/MM/yyyy"
                             showTime="true" hourFormat="12" stepMinute="30" />
                         <p:outputLabel for="observation" value="Observaciones" styleClass="text-500 w-6 md:w-2 font-medium" />
-                        <p:inputTextarea id="observation" value="#{bookingController.booking.observation}"/>
+                        <p:inputTextarea id="observation" value="#{bookingController.selectedBooking.observation}"/>
                         <h:outputText id="characters" class="block" />
                     </h:panelGrid>
                 </p:outputPanel>
@@ -84,14 +92,12 @@
                                 itemValue="#{lab}" itemLabel="#{lab}" />
                     <p:ajax event="valueChange" update="form:schedule"/>
                 </p:selectOneMenu>
-                <div style="height: 20px;"></div>
                 <p:commandButton value="Consultar" actionListener="#{bookingController.onLaboratorySelect}" process="@this"
                     update="schedule :form" oncomplete="PF('labSearch').hide();"/>
             </p:dialog>
 
             <p:dialog id="teacherwidget" widgetVar="teacherSearch" header="Indique el profesor" draggable="false" resizable="false">
                 <p:inputText value="#{bookingController.teacherToSearch}"/>
-                <div style="height: 20px;"></div>
                 <p:commandButton value="Consultar" actionListener="#{bookingController.onTeacherSearch}" process="teacherwidget @this"
                     update="schedule :form" oncomplete="PF('teacherSearch').hide();"/>
             </p:dialog>
@@ -102,13 +108,6 @@
                 <p:commandButton value="Consultar" actionListener="#{bookingController.onCourseSearch}" process="coursewidget @this"
                     update="schedule :form" oncomplete="PF('courseSearch').hide();"/>
             </p:dialog>
-
-            <div>
-                <div style="height: 20px;"></div>
-                <p:commandButton value="Exportar" styleClass="mr-2 mb-2" actionListener="#{bookingController.exportToPDF}" process="@this" update="@this" />
-            </div>
-            <p:linkButton value="Regresar" outcome="index.xhtml"
-                styleClass="btn-link ui-button-raised ui-button-secondary mt-5" />
         </div>
     </ui:define>
 </ui:composition>

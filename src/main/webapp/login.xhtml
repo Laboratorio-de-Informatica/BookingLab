@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition
-    xmlns:h="jakarta.faces.html"
-    xmlns:f="jakarta.faces.core"
-    xmlns:ui="jakarta.faces.facelets"
-    xmlns:p="http://primefaces.org/ui"
-    template="/template.xhtml">
-    <ui:define name="content">
-        <div class="grid grid-nogutter surface-section text-800">
-            <div class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center">
-                <section>
-                    <p:graphicImage library="img" name="logo.png" alt="logo" />
-                    <p class="text-5xl text-green-600 font-bold mb-6 mt-6">Bienvenido al Sistema de Reservas</p>
-                    <h2 class="mb-1">Iniciar Sesión</h2>
-                    <div class="field">
-                        <p:inputText class="w-full" placeholder="Nombre de Usuario" value="#{loginController.userName}" />
-                    </div>
-                    <div class="field">
-                        <p:password class="w-full" placeholder="Contraseña" value="#{loginController.password}" />
-                    </div>
-                    <div class="flex justify-content-between">
-                        <p:commandButton value="Ingresar" icon="pi pi-user"
-                            styleClass="btn-link mr-3 ui-button-raised ui-button-success" actionListener="#{loginController.login}" />
-                    </div>
-                </section>
-            </div>
-            <div class="col-12 md:col-6 overflow-hidden">
-                <p:graphicImage library="img" name="illustration.jpeg" alt="illustration"
-                                styleClass="md:ml-auto block md:h-screen"
-                                style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)"/>
-            </div>
-        </div>
+<html lang="en-us"
 
-    </ui:define>
-</ui:composition>
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <h:head>
+        <title>Iniciar Sesión</title>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+        <link href="#{resource['img/favicon.ico']}" rel="shortcut icon"/>
+        <h:outputStylesheet library="css" name="primeflex.min.css" />
+        <h:outputStylesheet library="css" name="normalize.css" />
+        <h:outputStylesheet library="css" name="template.css" />
+    </h:head>
+
+    <h:body>
+        <h:form prependId="false">
+            <div class="grid grid-nogutter surface-section text-800">
+                <div class="col-12 md:col-6 p-6 text-center md:text-left flex align-items-center">
+                    <section>
+                        <p:graphicImage library="img" name="logo.png" alt="logo" />
+                        <p class="text-5xl text-green-600 font-bold mb-6 mt-6">Bienvenido al Sistema de Reservas</p>
+                        <h2 class="mb-1">Iniciar Sesión</h2>
+                        <div class="field">
+                            <p:inputText id="username" class="w-full" placeholder="Nombre de Usuario" />
+                        </div>
+                        <div class="field">
+                            <p:password id="password" class="w-full" placeholder="Contraseña" />
+                        </div>
+                        <p:outputLabel value="Usuario o contraseña incorrectos" styleClass="block text-red-600 text-sm my-3"
+                                       rendered="${!empty param['error']}"/>
+                        <p:commandButton id="submit" value="Ingresar" icon="pi pi-user"
+                                             styleClass="btn-link mr-3 ui-button-raised ui-button-success" ajax="flase" />
+                    </section>
+                </div>
+                <div class="col-12 md:col-6 overflow-hidden">
+                    <p:graphicImage library="img" name="illustration.jpeg" alt="illustration"
+                                    styleClass="md:ml-auto block md:h-screen"
+                                    style="clip-path: polygon(8% 0, 100% 0%, 100% 100%, 0 100%)"/>
+                </div>
+            </div>
+        </h:form>
+    </h:body>
+</html>

@@ -16,10 +16,10 @@
 
                     <p:commandButton value="Iniciar Reserva" onclick="window.location.href='booking.xhtml'" actionListener="#{bookingController.startBooking}" process="@this"
                                   styleClass="btn-link mr-3 ui-button-raised ui-button-success" />
-                    <p:commandButton value="Cancelar Reserva" 
-                                  styleClass="btn-link mr-3 ui-button-raised ui-button-danger "/>  
                     <p:commandButton value="Consultar Reserva" onclick="window.location.href='consult.xhtml'"
-                                  styleClass="btn-link ui-button-raised ui-button-secondary"/>  
+                                  styleClass="btn-link mr-3 ui-button-raised ui-button-info"/>
+                    <p:commandButton value="Cerrar sesión" onclick="window.location.href='/logout'"
+                                     styleClass="btn-link ui-button-raised ui-button-danger"/>
                 </section>
             </div>
             <div class="col-12 md:col-6 overflow-hidden">
