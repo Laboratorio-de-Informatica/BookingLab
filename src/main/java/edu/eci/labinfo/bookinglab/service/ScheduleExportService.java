@@ -1,5 +1,7 @@
 package edu.eci.labinfo.bookinglab.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -47,53 +49,43 @@ public class ScheduleExportService {
         logger = LoggerFactory.getLogger(ScheduleExportService.class);
     }
 
-    public void exportToPDF() {
-        LocalDate today = LocalDate.now();
-        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate endOfWeek = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
+    public ByteArrayInputStream exportToPDF(LocalDate date) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            String templatePath = "C:/Users/rescate/Downloads/plantilla_semanal_horario.pdf"; // Cambia esto por la ruta de tu plantilla PDF
 
-        for (LocalDate date = startOfWeek; !date.isAfter(endOfWeek); date = date.plusDays(1)) {
-            try {
-                String fileName = "schedule_" + date.getDayOfWeek().toString().toLowerCase() + ".pdf";
-                String directoryPath = "C:/Users/rescate/Downloads"; // Cambia esto por la ruta de tu directorio de destino
-                String filePath = Paths.get(directoryPath, fileName).toString();
+            // Cargar la plantilla PDF
+            PdfReader reader = new PdfReader(templatePath);
+            Rectangle pageSize = reader.getPageSize(1);
 
-                // Ruta de la plantilla PDF
-                String templatePath = "C:/Users/rescate/Downloads/plantilla_semanal_horario.pdf"; // Cambia esto por la ruta de tu plantilla PDF
+            // Crear el documento PDF
+            Document document = new Document(pageSize);
+            PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+            document.open();
 
-                // Cargar la plantilla PDF
-                PdfReader reader = new PdfReader(templatePath);
-                Rectangle pageSize = reader.getPageSize(1);
+            PdfImportedPage page = writer.getImportedPage(reader, 1);
+            // Agregar la página de la plantilla al nuevo documento
+            PdfContentByte contentByte = writer.getDirectContent();
+            contentByte.addTemplate(page, 0, 0);
 
-                // Crear el documento PDF
-                Document document = new Document(pageSize);
-                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
-                document.open();
+            // Crear y agregar la tabla al documento
+            PdfPTable table = createScheduleTable(date);
 
-                PdfImportedPage page = writer.getImportedPage(reader, 1);
-                // Agregar la página de la plantilla al nuevo documento
-                PdfContentByte contentByte = writer.getDirectContent();
-                contentByte.addTemplate(page, 0, 0);
+            // Escribir la tabla en el documento
+            table.writeSelectedRows(0, -1, 10, 650, contentByte);
 
+            Paragraph title = new Paragraph("Día de la semana: " + date.getDayOfWeek().toString(),
+                    FontFactory.getFont(BEBAS_NEUE, 30, Font.BOLD));
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
 
-                // Crear y agregar la tabla al documento
-                PdfPTable table = createScheduleTable(date);
+            // Cerrar el documento
+            document.close();
+            reader.close();
 
-                // Escribir la tabla en el documento
-                table.writeSelectedRows(0, -1, 10, 650, contentByte);
-
-                Paragraph title = new Paragraph("Día de la semana: " + date.getDayOfWeek().toString(), FontFactory.getFont(BEBAS_NEUE, 30, Font.BOLD));
-                title.setAlignment(Element.ALIGN_CENTER);
-                document.add(title);
-
-                // Cerrar el documento
-                document.close();
-                reader.close();
-
-                logger.info("PDF guardado en: {}", filePath);
-            } catch (DocumentException | IOException e) {
-                logger.error("Error al exportar el horario a PDF: {}", e.getMessage());
-            }
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (DocumentException | IOException e) {
+            logger.error("Error al exportar el horario a PDF: {}", e.getMessage());
+            return null;
         }
     }
 

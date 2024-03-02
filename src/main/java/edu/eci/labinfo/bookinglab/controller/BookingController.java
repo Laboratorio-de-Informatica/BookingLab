@@ -57,7 +57,7 @@ public class BookingController {
     private final DurationController durationController;
     private final MailService mailService;
     private final PrimeFacesWrapper primeFacesWrapper;
-    private final ScheduleExportService scheduleExportService;
+    
 
     private static final String FORM_MESSAGES = "form:messages";
     private static final String ERROR = "Error";
@@ -65,13 +65,12 @@ public class BookingController {
     public BookingController(BookingService bookingService,
                              DurationController durationController,
                              MailService mailService,
-                             PrimeFacesWrapper primeFacesWrapper,
-                             ScheduleExportService scheduleExportService) {
+                             PrimeFacesWrapper primeFacesWrapper) {
         this.bookingService = bookingService;
         this.durationController = durationController;
         this.mailService = mailService;
         this.primeFacesWrapper = primeFacesWrapper;
-        this.scheduleExportService = scheduleExportService;
+        
     }
 
     @PostConstruct
@@ -270,10 +269,6 @@ public class BookingController {
         bookingToSave.setDate(LocalDate.now().with(day));
         bookingToSave.setDate(bookingToSave.getDate().plusWeeks(repetitions * i));
         return bookingToSave;
-    }
-
-    public void scheduleExport() {
-        scheduleExportService.exportToPDF();
     }
 
 }

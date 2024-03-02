@@ -23,8 +23,10 @@
                         styleClass="mr-2 ui-button-info ui-button-outlined" oncomplete="PF('courseSearch').show();" />
                 </div>
                 <div>
-                    <p:commandButton value="Exportar" styleClass="mr-2 ui-button-help" icon="pi pi-file-export"
-                    actionListener="#{bookingController.scheduleExport}" process="@this" update="@this" />
+                    <p:commandButton value="Exportar" ajax="false"  styleClass="mr-2 ui-button-help" 
+                    icon="pi pi-file-export" onclick="PrimeFaces.monitorDownload(start, stop);">
+                     <p:fileDownload value="#{fileDownload.file}"/>
+                    </p:commandButton>
                     <p:linkButton value="Regresar" outcome="index.xhtml" icon="pi pi-backward"
                         styleClass="btn-link ui-button-danger ui-button-secondary" />
                 </div>
