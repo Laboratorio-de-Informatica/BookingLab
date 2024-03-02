@@ -15,8 +15,12 @@ import edu.eci.labinfo.bookinglab.model.Laboratory;
 @Service
 public class BookingService {
 
+    private final BookingRepository bookingRepository;
+
     @Autowired
-    private BookingRepository bookingRepository;
+    public BookingService(BookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
 
     public Booking createReservation(Booking booking) throws BookingLabException {
         if (booking.getInitialTimeSlot().isAfter(booking.getFinalTimeSlot())) {

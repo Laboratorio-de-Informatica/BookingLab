@@ -13,8 +13,6 @@ import edu.eci.labinfo.bookinglab.model.Booking;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    Optional<Booking> findByInitialTimeSlot(LocalTime initialTimeSlot);
-
     List<Booking> findByTeacher(String teacher);
 
     List<Booking> findByLaboratory(String laboratory);

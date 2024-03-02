@@ -1,6 +1,7 @@
 package edu.eci.labinfo.bookinglab.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.eci.labinfo.bookinglab.data.UserRepository;
-import edu.eci.labinfo.bookinglab.model.User;
+import edu.eci.labinfo.bookinglab.model.UserEntity;
 
 @Service
 public class UserService {
@@ -21,32 +22,34 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User addUser(User user) {
+    public UserEntity addUser(UserEntity user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
-    public User getUserByUserName(String username) {
-        if (userRepository.findByUserName(username).isPresent()) {
-            return userRepository.findByUserName(username).get();
+    public UserEntity getUserByUserName(String username) {
+        Optional<UserEntity> optinalUser = userRepository.findByUserName(username);
+        if (optinalUser.isPresent()) {
+            return optinalUser.get();
         }
         return null;
     }
 
-    public User getUserByFullName(String fullName) {
-        if (userRepository.findByFullName(fullName).isPresent()) {
-            return userRepository.findByFullName(fullName).get();
+    public UserEntity getUserByFullName(String fullName) {
+        Optional<UserEntity> optinalUser = userRepository.findByFullName(fullName);
+        if (optinalUser.isPresent()) {
+            return optinalUser.get();
         }
         return null;
     }
 
-    public List<User> getUsers() {
+    public List<UserEntity> getUsers() {
         return userRepository.findAll();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public User updateUser(User user) {
+    public UserEntity updateUser(UserEntity user) {
         if (userRepository.existsById(user.getUserId())) {
             return userRepository.save(user);
         }
