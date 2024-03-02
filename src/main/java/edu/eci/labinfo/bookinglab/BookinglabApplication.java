@@ -1,20 +1,29 @@
 package edu.eci.labinfo.bookinglab;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.eci.labinfo.bookinglab.model.RoleEntity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import edu.eci.labinfo.bookinglab.model.Role;
-import edu.eci.labinfo.bookinglab.model.User;
+import edu.eci.labinfo.bookinglab.model.UserEntity;
+import edu.eci.labinfo.bookinglab.service.RolesService;
 import edu.eci.labinfo.bookinglab.service.UserService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 public class BookinglabApplication {
 
-    @Autowired
-    UserService myUserService;
+    private final UserService myUserService;
+    private final RolesService myRolesService;
+
+    public BookinglabApplication(UserService myUserService , RolesService myRolesService) {
+        this.myUserService = myUserService;
+        this.myRolesService = myRolesService;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(BookinglabApplication.class, args);
@@ -26,12 +35,16 @@ public class BookinglabApplication {
         return args -> {
 
             myUserService.deleteAllUsers();
+            myRolesService.deleteAll();
 
-            User user = new User();
-            user.setFullName("Laboratorío de Informática");
+            Set<RoleEntity> roles = new HashSet<>();
+            roles.add(RoleEntity.builder().name(Role.ADMINISTRADOR).build());
+
+            UserEntity user = new UserEntity();
+            user.setFullName("Laboratorio de Informática");
             user.setUserName("labinfo");
             user.setPassword("1234567890");
-            user.setRole(Role.ADMINISTRADOR);
+            user.setRoles(roles);
             myUserService.addUser(user);
 
         };

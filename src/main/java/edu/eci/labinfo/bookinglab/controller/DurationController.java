@@ -10,7 +10,6 @@ import java.util.Locale;
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
@@ -29,11 +28,9 @@ public class DurationController {
     private List<DayOfWeek> selectedDays;
     private int repetitions;
     private int duration;
-    Locale colombianLocale;
-    Logger logger;
-
-    @Autowired
-    BookingService bookingService;
+    private Locale colombianLocale;
+    private Logger logger;
+    private final BookingService bookingService;
 
     @PostConstruct
     public void init() {
@@ -46,6 +43,10 @@ public class DurationController {
         days = DayOfWeek.values();
         selectedDays = new ArrayList<>();
         updateSummaryMessage();
+    }
+
+    public DurationController(BookingService bookingService) {
+        this.bookingService = bookingService;
     }
 
     public String getDisplayNameOfDayOfWeek(DayOfWeek day) {
@@ -66,20 +67,20 @@ public class DurationController {
 
     private String generateWeeklyMessage() {
         String message = "se repite cada " + repetitions + " semana" + (repetitions > 1 ? "s " : " ");
-        String daysOfWeek = "";
+        StringBuilder daysOfWeekBuilder = new StringBuilder();
         message += selectedDays.size() > 1 ? "los " : "el ";
         for (DayOfWeek day : selectedDays) {
             String dayShort = getDisplayNameOfDayOfWeek(day);
             if (selectedDays.size() > 1) {
                 dayShort = day.getDisplayName(TextStyle.SHORT, colombianLocale);
             }
-            if (!daysOfWeek.isEmpty()) {
-                daysOfWeek += ", ";
+            if (!daysOfWeekBuilder.isEmpty()) {
+                daysOfWeekBuilder.append(", ");
             }
-            daysOfWeek += dayShort;
+            daysOfWeekBuilder.append(dayShort);
         }
-        daysOfWeek += ".";
-        message += daysOfWeek;
+        daysOfWeekBuilder.append(".");
+        message += daysOfWeekBuilder.toString();
         return message;
     }
 
