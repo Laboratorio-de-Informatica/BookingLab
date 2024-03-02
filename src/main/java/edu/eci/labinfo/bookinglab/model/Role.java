@@ -4,8 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
+
     ADMINISTRADOR("Administrador"),
     PROFESOR("Profesor");
+
     private String value;
 
     Role(String value) {
@@ -22,4 +24,5 @@ public enum Role {
         }
         return response;
     }
+
 }
