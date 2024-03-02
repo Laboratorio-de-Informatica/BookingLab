@@ -9,8 +9,8 @@
     <ui:define name="content"> 
         <div class="flex p-6 align-items-center flex-column h-screen">
             <p:outputPanel id="reservation" styleClass="w-full" rendered="#{not empty bookingController.selectedBooking}">
-                <div class="font-medium text-3xl text-900 mb-3">Información de Reserva</div>
-                <div class="text-500 mb-5">Ingrese los datos para crear una reserva.</div>
+                <h2 class="text-5xl text-green-600 font-bold">Información de Reserva</h2>
+                <p class="mb-5">Ingrese los datos para crear una reserva.</p>
                 <div class="formgrid grid">
                     <div class="field col-12 md:col-6">
                         <p:outputLabel for="teacher" value="Profesor" styleClass="font-medium" />

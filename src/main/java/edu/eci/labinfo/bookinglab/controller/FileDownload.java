@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -15,23 +16,14 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.web.context.annotation.RequestScope;
 
-import com.itextpdf.text.List;
-import com.itextpdf.text.pdf.codec.Base64.InputStream;
-
 import edu.eci.labinfo.bookinglab.service.ScheduleExportService;
-import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Named
 @RequestScope
 public class FileDownload {
 
     private StreamedContent file;
-
-
     private final ScheduleExportService scheduleExportService;
 
     public FileDownload(ScheduleExportService scheduleExportService) {
@@ -76,7 +68,7 @@ public class FileDownload {
                     .name("schedules.zip")
                     .contentType("application/zip")
                     .stream(() -> zipInputStream)
-                    .build();      
+                    .build();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,9 +2,8 @@ package edu.eci.labinfo.bookinglab.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +36,7 @@ import edu.eci.labinfo.bookinglab.model.Booking;
 @Service
 public class ScheduleExportService {
 
+    private static final String TEMPLATE_SCHEDULE_PDF = "/templates/plantilla_semanal_horario.pdf";
     public static final String BEBAS_NEUE = "Bebas Neue";
     public static final String CALIBRI = "Calibri";
     private final BookingService bookingService;
@@ -51,7 +51,7 @@ public class ScheduleExportService {
 
     public ByteArrayInputStream exportToPDF(LocalDate date) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            String templatePath = "C:/Users/rescate/Downloads/plantilla_semanal_horario.pdf"; // Cambia esto por la ruta de tu plantilla PDF
+            InputStream templatePath = getClass().getResourceAsStream(TEMPLATE_SCHEDULE_PDF); 
 
             // Cargar la plantilla PDF
             PdfReader reader = new PdfReader(templatePath);

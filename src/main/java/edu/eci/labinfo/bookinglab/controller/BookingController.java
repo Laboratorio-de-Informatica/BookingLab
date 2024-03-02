@@ -25,7 +25,6 @@ import edu.eci.labinfo.bookinglab.model.Laboratory;
 import edu.eci.labinfo.bookinglab.service.BookingService;
 import edu.eci.labinfo.bookinglab.service.MailService;
 import edu.eci.labinfo.bookinglab.service.PrimeFacesWrapper;
-import edu.eci.labinfo.bookinglab.service.ScheduleExportService;
 import edu.eci.labinfo.bookinglab.utils.LabColorManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;

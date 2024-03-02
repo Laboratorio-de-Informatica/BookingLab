@@ -10,7 +10,8 @@
     </f:view>
     <ui:define name="content">
         <div class="p-4 h-screen">
-            <h1>Consulta</h1>
+            <h2 class="text-5xl text-green-600 font-bold mb-3">Consulta</h2>
+            <p class="mb-5">Seleccione un tipo de consulta para filtrar las reservas.</p>
             <div class="flex justify-content-between mb-5">
                 <div>
                     <p:commandButton value="General" icon="pi pi-home" actionListener="#{bookingController.loadReservations()}" 

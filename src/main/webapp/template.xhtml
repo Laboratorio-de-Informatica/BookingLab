@@ -10,13 +10,14 @@
         <title>Reservas</title>
         <meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
         <link href="#{resource['img/favicon.ico']}" rel="shortcut icon"/>
+        <h:outputStylesheet library="css" name="primeone-light.css" />
         <h:outputStylesheet library="css" name="primeflex.min.css" />
         <h:outputStylesheet library="css" name="normalize.css" />
         <h:outputStylesheet library="css" name="template.css" />
     </h:head>
 
     <h:body>
-        <h:form id="form" styleClass="bg-gray-100">
+        <h:form id="form" class="bg-gray-100">
             <p:growl id="messages" showDetail="true"/>
             <ui:insert name="content" />
         </h:form>
