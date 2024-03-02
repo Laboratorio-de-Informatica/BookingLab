@@ -24,11 +24,11 @@
                     </div>
                     <div class="field col-12 md:col-1">
                         <p:outputLabel for="send" value="Enviar" styleClass="font-medium" />
-                        <p:selectBooleanCheckbox id="send" value="#{false}" itemLabel="Enviar" styleClass="p-2 w-full"/>
+                        <p:selectBooleanCheckbox id="send" value="#{bookingController.sendEmail}" itemLabel="Enviar" styleClass="p-2 w-full"/>
                     </div>
                     <div class="field col-12 md:col-4">
                         <p:outputLabel for="email" value="Correo electrónico" styleClass="font-medium" />
-                        <p:inputText id="email" placeholder="Correo del profesor" required="true"
+                        <p:inputText id="email" placeholder="Correo del profesor" required="true" value="#{bookingController.teacherEmail}"
                         styleClass="p-2 w-full" />
                     </div>
                     <div class="field col-12 md:col-3">

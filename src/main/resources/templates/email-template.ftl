@@ -41,10 +41,9 @@
         <ul>
             <li><strong>&#128210; Curso:</strong> ${course}</li>
             <li><strong>&#128205; Laboratorio:</strong> ${laboratory}</li>
-            <li><strong>&#128197; Fecha:</strong> ${date}</li>
-            <li><strong>&#128197; D&iacute;a:</strong> ${day}</li>
             <li><strong>&#128336; Hora Inicial:</strong> ${initialTimeSlot}</li>
             <li><strong>&#128343; Hora Final:</strong> ${finalTimeSlot}</li>
+            <li><strong>&#128197; Fecha(s):</strong> ${date}</li>
         </ul>
         <p>Agradecemos su colaboraci&oacute;n y esperamos que su tiempo en el laboratorio sea productivo &#128512;.</p>
         <p>Atentamente,</p>

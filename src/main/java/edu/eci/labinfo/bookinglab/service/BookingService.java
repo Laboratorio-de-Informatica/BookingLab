@@ -4,7 +4,6 @@ import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.eci.labinfo.bookinglab.data.BookingRepository;
@@ -17,7 +16,6 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
 
-    @Autowired
     public BookingService(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
     }

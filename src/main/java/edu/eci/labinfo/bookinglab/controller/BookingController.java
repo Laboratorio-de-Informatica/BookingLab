@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.primefaces.event.SelectEvent;
@@ -45,7 +46,9 @@ public class BookingController {
     private List<String> laboratories;
     private Booking selectedBooking;
     private Boolean firstLoad;
+    private Boolean sendEmail;
     private String selectedLaboratory;
+    private String teacherEmail;
     private String teacherToSearch;
     private String courseToSearch;
     private Logger logger;
@@ -74,6 +77,7 @@ public class BookingController {
     @PostConstruct
     public void init() {
         laboratories = bookingService.getLaboratories();
+        sendEmail = false;
         firstLoad = true;
         minTime = LocalTime.of(7, 0);
         maxTime = LocalTime.of(19, 0);
@@ -217,6 +221,7 @@ public class BookingController {
 
     public Boolean saveReservation() {
         List<DayOfWeek> selectedDays = durationController.getSelectedDays();
+        List<Booking> toSend = new ArrayList<>();
         int repetitions = durationController.getRepetitions();
         int duration = durationController.getDuration();
         for (int i = 0; i < duration; i++) {
@@ -225,10 +230,7 @@ public class BookingController {
                     Booking bookingToSave = makeBooking(repetitions, i, day);
                     bookingService.createReservation(bookingToSave);
                     placeBookingEvent(bookingToSave);
-                    if (false) {
-                        // set the email and subject
-                        mailService.sendMail(null,null,bookingToSave);
-                    }
+                    toSend.add(bookingToSave);
                 } catch (BookingLabException e) {
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
@@ -236,6 +238,12 @@ public class BookingController {
                     return false;
                 }
             }
+        }
+        if (Boolean.TRUE.equals(sendEmail)) {
+            mailService.sendMail(teacherEmail, toSend);
+            logger.info("Correo enviado a {}", teacherEmail);
+            teacherEmail = "";
+            sendEmail = false;
         }
 
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();

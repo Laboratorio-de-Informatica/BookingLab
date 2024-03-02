@@ -3,9 +3,8 @@ package edu.eci.labinfo.bookinglab.service;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class MailService {
 
+    private static final String RESERVA_DE_LABORATORIO = "Reserva de laboratorio";
     private final JavaMailSender javaMailSender;
     private final Configuration mailConfig;
     private Logger logger;
@@ -35,8 +35,8 @@ public class MailService {
         logger = LoggerFactory.getLogger(MailService.class);
     }
 
-    public void sendMail(String to, String subject, Booking booking) {
-        Map<String, Object> model = mappingBooking(booking);
+    public void sendMail(String to, List<Booking> bookings) {
+        Map<String, Object> model = mappingBooking(bookings);
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -46,8 +46,8 @@ public class MailService {
             Template template = mailConfig.getTemplate("email-template.ftl");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 
+            helper.setSubject(RESERVA_DE_LABORATORIO);
             helper.setTo(to);
-            helper.setSubject(subject);
             helper.setText(html, true);
             javaMailSender.send(message);
         } catch (MessagingException | IOException | TemplateException e) {
@@ -55,17 +55,20 @@ public class MailService {
         }
     }
 
-    private Map<String, Object> mappingBooking(Booking booking) {
+    private Map<String, Object> mappingBooking(List<Booking> bookings) {
         Map<String, Object> bookingMap = new HashMap<>();
+        StringBuilder dates = new StringBuilder();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-        bookingMap.put("teacher", booking.getTeacher());
-        bookingMap.put("course", booking.getCourse());
-        bookingMap.put("date", booking.getDate());
-        bookingMap.put("laboratory", booking.getLaboratory());
-        bookingMap.put("initialTimeSlot", booking.getInitialTimeSlot().format(formatter));
-        bookingMap.put("finalTimeSlot", booking.getFinalTimeSlot().format(formatter));
-        bookingMap.put("day", booking.getDay().getDisplayName(TextStyle.FULL, new Locale("es", "CO")));
-
+        for (Booking booking : bookings) {
+            bookingMap.put("teacher", booking.getTeacher());
+            bookingMap.put("course", booking.getCourse());
+            bookingMap.put("laboratory", booking.getLaboratory());
+            bookingMap.put("initialTimeSlot", booking.getInitialTimeSlot().format(formatter));
+            bookingMap.put("finalTimeSlot", booking.getFinalTimeSlot().format(formatter));
+            dates.append("<br>");
+            dates.append(booking.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        }
+        bookingMap.put("date", dates);
         return bookingMap;
     }
 
