@@ -6,6 +6,26 @@ El proyecto implementación de una herramienta para las reservas de salones del 
 
 La aplicación BookingLab es una herramienta que permite a los administradores del laboratorio de informática de la Universidad Escuela Colombiana de Ingeniería Julio Garavito realizar reservas de salones del Laboratorio de Informática. La aplicación permite iniciar una reserva, enviar correo electrónico de confirmación de la reserva, cancelar una reserva y poder consultar las reservas por profesor, por salón y por materia.
 
+**Visualización de la página de inicio de sesión.**
+
+![image](https://github.com/Laboratorio-de-Informatica/BookingLab/assets/99996670/c36feb2d-7e49-4efc-8e39-8f29a8c86d13)
+
+**Visualización de página principal después de iniciar sesión.**
+
+![image](https://github.com/Laboratorio-de-Informatica/BookingLab/assets/99996670/643f48c6-9fe0-443c-9bc4-d33ce0b29450)
+
+**Visualización de la página para crear una reserva.**
+
+![image](https://github.com/Laboratorio-de-Informatica/BookingLab/assets/99996670/6fdc39d4-ec72-4994-8a4a-1ed9dec7e6be)
+
+**Visualización de la página de consultas, la cual permite consultar las reservas por porfesor, por salón y por materia, además, permite exportar el horario semanal**
+
+![image](https://github.com/Laboratorio-de-Informatica/BookingLab/assets/99996670/f3e44212-b131-4582-8713-e38a34e0d083)
+
+**Ejemplo del horario semanal que se exporta.**
+
+![image](https://github.com/Laboratorio-de-Informatica/BookingLab/assets/99996670/e0de5887-c763-4801-b153-44ded28b08e5)
+
 ## Comenzando 🚀
 
 Las siguientes instrucciones le permitirán obtener una copia del proyecto en funcionamiento en su máquina local para fines de desarrollo y prueba.
