@@ -17,6 +17,11 @@ import edu.eci.labinfo.bookinglab.service.BookingService;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 
+/**
+ * Clase que controla la duracion de la reserva
+ * @version 1.0
+ * @author Daniel Antonio Santanilla
+ */
 @Component
 @SessionScope
 @Data
@@ -49,22 +54,37 @@ public class DurationController {
         this.bookingService = bookingService;
     }
 
+    /**
+     * Nombre del dia de la semana
+     * @param day Dia de la semana
+     * @return Cadena con el nombre del dia de la semana
+     */
     public String getDisplayNameOfDayOfWeek(DayOfWeek day) {
         return day.getDisplayName(TextStyle.FULL, colombianLocale);
     }
 
+    /**
+     * Actualiza el mensaje de resumen para la duracion de la reserva
+     */
     public void updateSummaryMessage() {
         ensureAtLeastOneDaySelected();
         summaryMessage = generateWeeklyMessage();
         PrimeFaces.current().ajax().update("form:selectDaysButton");
     }
 
+    /**
+     * Asegura que al menos un dia este seleccionado
+     */
     private void ensureAtLeastOneDaySelected() {
         if (selectedDays.isEmpty()) {
             selectedDays.add(LocalDate.now().getDayOfWeek());
         }
     }
 
+    /**
+     * Genera el mensaje de resumen para la duracion de la reserva
+     * @return Mensaje de resumen para la duracion de la reserva
+     */
     private String generateWeeklyMessage() {
         String message = "se repite cada " + repetitions + " semana" + (repetitions > 1 ? "s " : " ");
         StringBuilder daysOfWeekBuilder = new StringBuilder();

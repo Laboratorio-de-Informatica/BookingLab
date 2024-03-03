@@ -2,6 +2,13 @@ package edu.eci.labinfo.bookinglab.model;
 
 import lombok.Getter;
 
+/**
+ * Enumeración que representa los roles de los usuarios
+ * @version 1.0
+ * @author David Eduardo Valencia
+ * @author Daniel Antonio Santanilla
+ * @author Andres Camilo Oniate
+ */
 @Getter
 public enum Role {
 

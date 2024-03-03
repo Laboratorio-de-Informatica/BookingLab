@@ -8,6 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import edu.eci.labinfo.bookinglab.model.Booking;
 
+/**
+ * Interfaz que define las operaciones de la base de datos para las reservas
+ * @version 1.0
+ * @author Andres Camilo Oniate
+ * @author Daniel Antonio Santanilla
+ */
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 

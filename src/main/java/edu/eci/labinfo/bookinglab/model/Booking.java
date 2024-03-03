@@ -13,6 +13,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Representa una reserva de un laboratorio
+ * @version 1.0
+ * @author Daniel Antonio Santanilla
+ * @author David Eduardo Valencia
+ */
 @Entity
 @Data
 @AllArgsConstructor

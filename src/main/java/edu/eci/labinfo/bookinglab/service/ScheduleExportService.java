@@ -8,8 +8,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import edu.eci.labinfo.bookinglab.model.Booking;
 
+/**
+ * Clase que define los servicios para exportar el horario de reservas a un archivo PDF
+ * @version 1.0
+ * @author Andres Camilo Oniate
+ */
 @Service
 public class ScheduleExportService {
 
@@ -49,6 +56,11 @@ public class ScheduleExportService {
         logger = LoggerFactory.getLogger(ScheduleExportService.class);
     }
 
+    /**
+     * Exporta el horario de reservas a un archivo PDF
+     * @param date Fecha para la cual se desea exportar el horario
+     * @return Flujo de entrada con el archivo PDF
+     */
     public ByteArrayInputStream exportToPDF(LocalDate date) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             InputStream templatePath = getClass().getResourceAsStream(TEMPLATE_SCHEDULE_PDF); 
@@ -73,10 +85,17 @@ public class ScheduleExportService {
             // Escribir la tabla en el documento
             table.writeSelectedRows(0, -1, 10, 650, contentByte);
 
-            Paragraph title = new Paragraph("Día de la semana: " + date.getDayOfWeek().toString(),
-                    FontFactory.getFont(BEBAS_NEUE, 30, Font.BOLD));
-            title.setAlignment(Element.ALIGN_CENTER);
-            document.add(title);
+            PdfPTable title = new PdfPTable(1);
+            title.setWidthPercentage(100);
+            title.setTotalWidth(400F);
+            PdfPCell cell = new PdfPCell();
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.addElement(new Paragraph(
+                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es")).toUpperCase(),
+                    FontFactory.getFont(BEBAS_NEUE, 50, Font.BOLD, new BaseColor(57,55,56))));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            title.addCell(cell);
+            title.writeSelectedRows(0, -1, 600, 750, contentByte);
 
             // Cerrar el documento
             document.close();
@@ -89,9 +108,15 @@ public class ScheduleExportService {
         }
     }
 
+    /**
+     * Crea la tabla con el horario de reservas para un día específico
+     * @param date Fecha para la cual se desea crear la tabla
+     * @return Tabla con el horario de reservas
+     * @throws DocumentException Si ocurre un error al crear la tabla
+     */
     private PdfPTable createScheduleTable(LocalDate date) throws DocumentException {
         // Obtener las reservas para el día específico
-        java.util.List<Booking> bookings = bookingService.getReservationByDay(date.getDayOfWeek());
+        List<Booking> bookings = bookingService.getReservationByDay(date.getDayOfWeek());
 
         // Crear la tabla con las reservas para ese día
         PdfPTable table = new PdfPTable(laboratories.size() + 1); // Una columna adicional para las horas
@@ -146,6 +171,16 @@ public class ScheduleExportService {
         return table;
     }
 
+    /**
+     * Crea una celda con los estilos especificados
+     * @param bgColor Color de fondo de la celda
+     * @param borderColor Color del borde de la celda
+     * @param horizontalAlignment Alineación horizontal del texto
+     * @param verticalAlignment Alineacion vertical del texto
+     * @param minHeight Altura minima de la celda
+     * @param padding Espaciado interno de la celda
+     * @return Celda con los estilos especificados
+     */
     private PdfPCell createCell(BaseColor bgColor, BaseColor borderColor, int horizontalAlignment, int verticalAlignment, float minHeight, float padding) {
         PdfPCell cell = new PdfPCell();
         cell.setBackgroundColor(bgColor);
@@ -157,6 +192,13 @@ public class ScheduleExportService {
         return cell;
     }
 
+    /**
+     * Obtiene la informacion de las reservas para una hora y laboratorio especificos
+     * @param time Hora de la reserva
+     * @param laboratory Laboratorio de la reserva
+     * @param bookings Lista de reservas
+     * @return Información de las reservas para la hora y laboratorio especificos
+     */
     private String getBookingInfo(LocalTime time, String laboratory, List<Booking> bookings) {
         LocalDate today = LocalDate.now();
         LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));

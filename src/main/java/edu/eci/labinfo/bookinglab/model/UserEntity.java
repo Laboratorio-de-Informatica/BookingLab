@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
+/**
+ * Representa un usuario en la base de datos
+ * @version 1.0
+ * @author Daniel Santanillae
+ */
 @Entity
 @Data
 @AllArgsConstructor
@@ -26,4 +31,5 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleEntity.class, cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
+
 }

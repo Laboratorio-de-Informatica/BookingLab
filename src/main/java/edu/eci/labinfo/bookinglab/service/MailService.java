@@ -21,6 +21,11 @@ import freemarker.template.TemplateException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
+/**
+ * Clase que define los servicios de envio de correos
+ * @version 1.0
+ * @author Daniel Antonio Santanilla
+ */
 @Service
 public class MailService {
 
@@ -35,6 +40,11 @@ public class MailService {
         logger = LoggerFactory.getLogger(MailService.class);
     }
 
+    /**
+     * Envia un correo con las reservas
+     * @param to Correo al que se le enviara el mensaje
+     * @param bookings Reservas a enviar
+     */
     public void sendMail(String to, List<Booking> bookings) {
         Map<String, Object> model = mappingBooking(bookings);
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -55,6 +65,11 @@ public class MailService {
         }
     }
 
+    /**
+     * Mapea las reservas para enviarlas en el correo con la plantilla
+     * @param bookings Reservas a mapear
+     * @return Mapa con las reservas
+     */
     private Map<String, Object> mappingBooking(List<Booking> bookings) {
         Map<String, Object> bookingMap = new HashMap<>();
         StringBuilder dates = new StringBuilder();

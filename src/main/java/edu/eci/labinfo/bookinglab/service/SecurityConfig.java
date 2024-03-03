@@ -7,36 +7,64 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+/**
+ * Clase que define la configuración de seguridad de la aplicación
+ * @version 1.0
+ * @author Daniel Antonio Santanilla
+ * @author Andres Camilo Oniate
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    public static final String LOGIN_PAGE = "/login.xhtml";
     private final UserDetailsServiceImpl userDetailsService;
 
     public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Configura la seguridad de la aplicación permitiendo el acceso
+     * al formulario de login y a los recursos de JSF
+     * @param httpSecurity Configuración de seguridad
+     * @return Filtro de seguridad
+     * @throws Exception Si ocurre un error al configurar la seguridad
+     */
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return  httpSecurity
+        HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+        requestCache.setMatchingRequestParameterName(null);
+        httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
+            .requestCache(cache -> cache.requestCache(requestCache))
             .authorizeHttpRequests(request -> {
                 request.requestMatchers(new AntPathRequestMatcher("/jakarta.faces.resource/**")).permitAll();
                 request.anyRequest().authenticated();
             })
             .formLogin(formLogin -> formLogin
-                .loginPage("/login.xhtml")
+                .loginPage(LOGIN_PAGE)
                 .permitAll()
-                .failureUrl("/login.xhtml?error=true")
-                .defaultSuccessUrl("/index.xhtml"))
-            .logout(logout -> logout.logoutSuccessUrl("/login.xhtml").deleteCookies("JSESSIONID"))
-            .build();
+                .defaultSuccessUrl("/index.xhtml")
+                .failureUrl("/login.xhtml?error=true"))
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl(LOGIN_PAGE)
+                .permitAll()
+                .deleteCookies("JSESSIONID"))
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionFixation().migrateSession()
+                .maximumSessions(1)
+                .expiredUrl(LOGIN_PAGE));
+        return httpSecurity.build();
     }
 
     @Bean

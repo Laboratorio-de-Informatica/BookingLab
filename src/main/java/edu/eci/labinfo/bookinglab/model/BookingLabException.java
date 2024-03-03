@@ -1,5 +1,11 @@
 package edu.eci.labinfo.bookinglab.model;
 
+/**
+ * Excepción personalizada para el manejo de errores en el sistema
+ * @version 1.0
+ * @author Andres Camilo Oniate
+ * @author David Eduardo Valencia
+ */
 public class BookingLabException extends Exception {
 
     public static final String INCOMPLETE_FIELDS = "Por favor complete todos los campos.";

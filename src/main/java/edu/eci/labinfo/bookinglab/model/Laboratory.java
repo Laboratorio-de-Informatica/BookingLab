@@ -5,6 +5,12 @@ import java.util.List;
 
 import lombok.Getter;
 
+/**
+ * Enumeración que representa los laboratorios
+ * @version 1.0
+ * @author David Eduardo Valencia
+ * @author Daniel Antonio Santanilla
+ */
 @Getter
 public enum Laboratory {
 

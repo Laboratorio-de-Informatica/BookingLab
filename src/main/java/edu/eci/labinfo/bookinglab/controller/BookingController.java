@@ -32,6 +32,12 @@ import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import lombok.Data;
 
+/**
+ * Clase que controla las reservas
+ * @version 1.0
+ * @author Daniel Antonio Santanilla
+ * @author Andres Camilo Oniate
+ */
 @Component
 @SessionScope
 @Data
@@ -85,6 +91,9 @@ public class BookingController {
         logger = LoggerFactory.getLogger(BookingController.class);
     }
 
+    /**
+     * Carga las reservas de la base de datos
+     */
     public void loadReservationsDB() {
         if (Boolean.TRUE.equals(firstLoad)) {
             loadReservations();
@@ -92,6 +101,9 @@ public class BookingController {
         }
     }
 
+    /**
+     * Carga las reservas para la vista
+     */
     public void loadReservations() {
         eventModel.clear();
         List<Booking> bookings = bookingService.getAllReservations();
@@ -102,6 +114,10 @@ public class BookingController {
         primeFacesWrapper.current().ajax().update("form:schedule");
     }
 
+    /**
+     * Coloca una reserva en el calendario
+     * @param booking Reserva a colocar
+     */
     private void placeBookingEvent(Booking booking) {
         LocalDateTime startDateTime = LocalDateTime.of(booking.getDate(), booking.getInitialTimeSlot());
         LocalDateTime endDateTime = LocalDateTime.of(booking.getDate(), booking.getFinalTimeSlot());
@@ -119,17 +135,28 @@ public class BookingController {
         eventModel.addEvent(bookingEvent);
     }
 
+    /**
+     * Inicia una reserva
+     */
     public void startBooking() {
         logger.info("Iniciando reserva");
         this.selectedBooking = new Booking();
     }
 
+    /**
+     * Selecciona un evento del calendario
+     * @param selectEvent Evento seleccionado
+     */
     public void onEventSelect(SelectEvent<ScheduleEvent<Booking>> selectEvent) {
         event = selectEvent.getObject();
         selectedBooking = event.getData();
         logger.info("Evento seleccionado");
     }
 
+    /**
+     * Actualiza una reserva en la base de datos
+     * @return true si la reserva se guarda correctamente, false de lo contrario
+     */
     public Boolean onEventUpdate() {
         try {
             selectedBooking.setInitialTimeSlot(event.getStartDate().toLocalTime());
@@ -148,6 +175,10 @@ public class BookingController {
         return true;
     }
 
+    /**
+     * Cancela una reserva
+     * @return true si la reserva se cancela correctamente, false de lo contrario
+     */
     public Boolean onEventCancel() {
         try {
             Booking bookingToCancel = event.getData();
@@ -163,6 +194,10 @@ public class BookingController {
         return true;
     }
 
+    /**
+     * Filtra las reservas por laboratorio
+     * @return true si hay reservas, false de lo contrario
+     */
     public Boolean onLaboratorySelect() {
         logger.info("Laboratorio seleccionado {}", selectedLaboratory);
         eventModel.clear();
@@ -177,6 +212,10 @@ public class BookingController {
         return false;
     }
 
+    /**
+     * Filtra las reservas por profesor
+     * @return true si hay reservas, false de lo contrario
+     */
     public Boolean onTeacherSearch() {
         logger.info("Profesor a buscar: {}", teacherToSearch);
         eventModel.clear();
@@ -190,7 +229,11 @@ public class BookingController {
         }
         return false;
     }
-    
+
+    /**
+     * Filtra las reservas por curso
+     * @return true si hay reservas, false de lo contrario
+     */
     public Boolean onCourseSearch() {
         logger.info("Curso a buscar: {}", courseToSearch);
         eventModel.clear();
@@ -205,6 +248,10 @@ public class BookingController {
         return false;
     }
 
+    /**
+     * Elimina una reserva
+     * @return true al eliminar la reserva
+     */
     public Boolean onEventDelete() {
         Booking bookingToDelete = event.getData();
         bookingToDelete.setCanceled(true);
@@ -217,6 +264,10 @@ public class BookingController {
         return true;
     }
 
+    /**
+     * Guarda una reserva
+     * @return true si guarda la reserva, false de lo contrario
+     */
     public Boolean saveReservation() {
         List<DayOfWeek> selectedDays = durationController.getSelectedDays();
         List<Booking> toSend = new ArrayList<>();
@@ -255,6 +306,17 @@ public class BookingController {
         return true;
     }
 
+    /**
+     * Crea una reserva a partir de cada cuantas semanas se repite define la duracion
+     * Ej. Si las repeticiones por semanas 1 y el numero de duracion es 2,
+     * se crearan reservas para la semana 1 y 2
+     * Ej. Si las repeticiones por semanas 2 y el numero de duracion es 2,
+     * se crearan reservas para la semana 2 y 4
+     * @param repetitions Numero de repeticiones de la reserva
+     * @param i Cantidad de duracion de la reserva
+     * @param day Dia de la semana
+     * @return Reserva a guardar
+     */
     private Booking makeBooking(int repetitions, int i, DayOfWeek day) {
         Booking bookingToSave = new Booking();
         bookingToSave.setTeacher(this.selectedBooking.getTeacher());

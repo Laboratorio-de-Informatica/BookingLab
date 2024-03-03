@@ -1,6 +1,10 @@
 # BookingLab
 
-El proyecto "Reservas de salones para el Laboratorio de Informática" tiene como objetivo simplificar y optimizar la creación de reservas para el laboratorio de informática.
+El proyecto implementación de una herramienta para las reservas de salones del Laboratorio de Informática tiene como objetivo simplificar y optimizar la creación de reservas.
+
+## Descripción de la aplicación 📖
+
+La aplicación BookingLab es una herramienta que permite a los administradores del laboratorio de informática de la Universidad Escuela Colombiana de Ingeniería Julio Garavito realizar reservas de salones del Laboratorio de Informática. La aplicación permite iniciar una reserva, enviar correo electrónico de confirmación de la reserva, cancelar una reserva y poder consultar las reservas por profesor, por salón y por materia.
 
 ## Comenzando 🚀
 
@@ -23,7 +27,6 @@ Realice los siguientes pasos para clonar el proyecto en su máquina local.
 ```bash
 git clone https://github.com/Laboratorio-de-Informatica/BookingLab.git
 cd BookingLab/
-
 ```
 
 ## Ejecutando la aplicación ⚙️
@@ -32,24 +35,21 @@ Para ejecutar la aplicación, ejecute el siguiente comando para crear un contene
 
 ```bash
 docker run -p 3306:3306 --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:latest
-
 ```
 
 > [!NOTE]  
 > El anterior comando creará un contenedor con MySQL en el puerto 3306, el nombre del contenedor será `some-mysql` y la contraseña del usuario root será `my-secret-pw`.
 
+> [!WARNING]  
+> Si desea visualizar el envio de correos debe configurar las credenciales de su correo en el archivo `application.properties` que se encuentra en la ruta `src/main/resources/application.properties`, ingrese su correo en la propiedad `spring.mail.username` y su contraseña en la propiedad `spring.mail.password`, además del host de su correo `spring.mail.host`.
+
 ```bash
 mvn clean spring-boot:run
-
 ```
 
 El anterior comando compilará y ejecutará la aplicación, espere a que la aplicación se inicie y muestre un mensaje similar al siguiente:
 
 Diríjase a su navegador de preferencia y vaya a la siguiente dirección: [http://localhost/login.xhtml](http://localhost/login.xhtml) para ver la aplicación en funcionamiento.
-
-## Descripción de la aplicación 📖
-
-...
 
 ## Versionado 📌
 
@@ -67,7 +67,7 @@ Se está utilizando el framework de Spring Boot para el desarrollo de la aplicac
 
     Maven es la herramienta utilizada para la construcción del proyecto. La versión de Maven indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Spring Boot Version](https://img.shields.io/badge/SpringBoot-v3.2.2-green)
+* ![Spring Boot Version](https://img.shields.io/badge/SpringBoot-v3.2.3-green)
 
     Spring Boot es el framework utilizado para el desarrollo de la aplicación. La versión de Spring Boot indicada es la versión utilizada para el desarrollo de la aplicación.
 
@@ -87,7 +87,7 @@ Se está utilizando el framework de Spring Boot para el desarrollo de la aplicac
 
     Prime Faces es la dependencia utilizada para la interfaz gráfica de la aplicación. La versión de Prime Faces indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Embedded Tomcat Version](https://img.shields.io/badge/EmbeddedTomcat-v10.1.18-brown)
+* ![Embedded Tomcat Version](https://img.shields.io/badge/EmbeddedTomcat-v10.1.19-brown)
 
     Embedded Tomcat es la dependencia utilizada para el servidor web embebido de la aplicación. La versión de Embedded Tomcat indicada es la versión utilizada para el desarrollo de la aplicación.
 

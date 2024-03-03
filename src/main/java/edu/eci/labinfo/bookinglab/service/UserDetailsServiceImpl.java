@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 import edu.eci.labinfo.bookinglab.data.UserRepository;
 import edu.eci.labinfo.bookinglab.model.UserEntity;
 
+/**
+ * Clase que implementa la interfaz UserDetailsService de Spring Security
+ * @version 1.0
+ * @autor Daniel Antonio Santanilla
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -24,6 +29,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userService = userService;
     }
 
+    /**
+     * Obtiene un usuario por su nombre de usuario para autenticacion
+     * @param username Nombre de usuario
+     * @return Usuario encontrado
+     * @throws UsernameNotFoundException Si el usuario no es encontrado
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> optionalUser = userService.findByUserName(username);

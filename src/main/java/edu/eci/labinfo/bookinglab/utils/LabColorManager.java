@@ -5,6 +5,11 @@ import java.util.Map;
 
 import edu.eci.labinfo.bookinglab.model.Laboratory;
 
+/**
+ * Clase que maneja los colores de los laboratorios
+ * @version 1.0
+ * @author Daniel Antonio Santanilla
+ */
 public class LabColorManager {
 
     private Map<Laboratory, String> labColors;
@@ -29,6 +34,11 @@ public class LabColorManager {
         return instance;
     }
 
+    /**
+     * Obtiene el color de un laboratorio
+     * @param lab Laboratorio
+     * @return Color del laboratorio
+     */
     public String getColor(Laboratory lab) {
         return labColors.get(lab);
     }
