@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      lang="es-CO">
+<body>
+<ui:composition template="/template.xhtml">
+    <ui:define name="content">
+        <div class="flex p-6 align-items-center flex-column h-screen">
+            <p:outputPanel id="reservation" styleClass="w-full"
+                           rendered="#{not empty bookingController.selectedBooking}">
+                <h2 class="text-5xl text-green-600 font-bold">Información de Reserva</h2>
+                <p class="mb-5">Ingrese los datos para crear una reserva.</p>
+                <div class="formgrid grid">
+                    <div class="field col-12 md:col-6">
+                        <p:outputLabel for="teacher" value="Profesor" styleClass="font-medium"/>
+                        <p:inputText id="teacher" placeholder="Iniciales del profesor"
+                                     value="#{bookingController.selectedBooking.teacher}" required="true"
+                                     styleClass="p-2 w-full"/>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <p:outputLabel for="course" value="Curso" styleClass="font-medium"/>
+                        <p:inputText id="course" placeholder="Materia"
+                                     value="#{bookingController.selectedBooking.course}" required="true"
+                                     styleClass="p-2 w-full"/>
+                    </div>
+                    <div class="field col-12 md:col-1">
+                        <p:outputLabel for="send" value="Enviar" styleClass="font-medium"/>
+                        <p:selectBooleanCheckbox id="send" value="#{bookingController.sendEmail}" itemLabel="Enviar"
+                                                 styleClass="p-2 w-full"/>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <p:outputLabel for="email" value="Correo electrónico" styleClass="font-medium"/>
+                        <p:inputText id="email" placeholder="Correo del profesor" required="true"
+                                     value="#{bookingController.teacherEmail}"
+                                     styleClass="p-2 w-full"/>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <p:outputLabel for="laboratory" value="Laboratorio" styleClass="font-medium"/>
+                        <p:selectOneMenu id="laboratory" required="true" styleClass="w-full"
+                                         value="#{bookingController.selectedBooking.laboratory}">
+                            <f:selectItem itemLabel="Seleccionar Laboratorio" itemValue=""/>
+                            <f:selectItems value="#{bookingController.laboratories}" var="lab"
+                                           itemValue="#{lab}" itemLabel="#{lab}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <p:outputLabel for="timeslotmin" value="Hora inicial" styleClass="font-medium w-full"/>
+                        <p:datePicker id="timeslotmin" value="#{bookingController.selectedBooking.initialTimeSlot}"
+                                      stepMinute="30" styleClass="surface-overlay"
+                                      mindate="#{bookingController.minTime}" maxdate="#{bookingController.maxTime}"
+                                      timeOnly="true" pattern="HH:mm" hourFormat="12" required="true"/>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <p:outputLabel for="timeslotmax" value="Hora final" styleClass="font-medium w-full"/>
+                        <p:datePicker id="timeslotmax" value="#{bookingController.selectedBooking.finalTimeSlot}"
+                                      stepMinute="30" styleClass="surface-overlay"
+                                      mindate="#{bookingController.minTime}" maxdate="#{bookingController.maxTime}"
+                                      timeOnly="true" pattern="HH:mm" hourFormat="12" required="true"/>
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="observation" value="Observaciones" styleClass="font-medium"/>
+                        <p:inputTextarea id="observation" rows="5" cols="30" counter="characters" maxlength="500"
+                                         styleClass="p-2 w-full"
+                                         counterTemplate="{0} caracteres restantes"
+                                         value="#{bookingController.selectedBooking.observation}"/>
+                        <h:outputText id="characters" class="block py-2"/>
+                    </div>
+                    <div class="field col-12 md:col-8">
+                        <p:outputLabel value="Repetir" styleClass="font-medium"/>
+                        <div class="flex justify-content-between">
+                            <p:spinner id="srepeat" value="#{durationController.repetitions}" min="1">
+                                <p:ajax event="change" update="summaryMessage"
+                                        listener="#{durationController.updateSummaryMessage}"/>
+                            </p:spinner>
+                            <p:selectManyButton id="selectDaysButton" value="#{durationController.selectedDays}">
+                                <f:selectItems value="#{durationController.days}" var="day"
+                                               itemValue="#{day}"
+                                               itemLabel="#{durationController.getDisplayNameOfDayOfWeek(day)}"/>
+                                <p:ajax event="change" update="summaryMessage"
+                                        listener="#{durationController.updateSummaryMessage}"/>
+                            </p:selectManyButton>
+                        </div>
+                        <p:outputLabel id="summaryMessage" styleClass="my-3">
+                            Este evento #{durationController.summaryMessage}
+                        </p:outputLabel>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <p:outputLabel for="duration" value="Duración" styleClass="font-medium"/>
+                        <p:spinner id="duration" value="#{durationController.duration}" min="1" styleClass="w-full">
+                            <p:ajax event="change" update="durationMessage"/>
+                        </p:spinner>
+                        <p:outputLabel id="durationMessage" styleClass=" my-2">
+                            Este evento dura #{durationController.duration} #{durationController.duration == 1 ? 'vez' : 'veces'} en total
+                        </p:outputLabel>
+                    </div>
+                </div>
+            </p:outputPanel>
+            <p:outputPanel styleClass="flex gap-5">
+                <p:commandButton value="Regresar" onclick="window.location.href='index.xhtml'" icon="pi pi-backward"
+                                 styleClass="btn-link ui-button-raised ui-button-danger"/>
+                <p:commandButton value="Reservar" process="reservation @this" update="reservation :form"
+                                 icon="pi pi-calendar-plus"
+                                 styleClass="btn-link ui-button-raised ui-button-success"
+                                 actionListener="#{bookingController.saveReservation}"/>
+            </p:outputPanel>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -64,12 +64,24 @@ docker run -p 3306:3306 --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d
 > Si desea visualizar el envio de correos debe configurar las credenciales de su correo en el archivo `application.properties` que se encuentra en la ruta `src/main/resources/application.properties`, ingrese su correo en la propiedad `spring.mail.username` y su contraseña en la propiedad `spring.mail.password`, además del host de su correo `spring.mail.host`.
 
 ```bash
-mvn clean spring-boot:run
+mvn clean compile spring-boot:run
 ```
 
 El anterior comando compilará y ejecutará la aplicación, espere a que la aplicación se inicie y muestre un mensaje similar al siguiente:
 
-Diríjase a su navegador de preferencia y vaya a la siguiente dirección: [http://localhost/login.xhtml](http://localhost/login.xhtml) para ver la aplicación en funcionamiento.
+Diríjase a su navegador de preferencia y vaya a la siguiente dirección: <http://localhost:8081/login.xhtml> para ver la aplicación en funcionamiento.
+
+Si desea empaquetar en un jar asegurate de tener el `application.properties` configuardo con la base de datos a la que te vas a conectar luego de eso ejecuta el comando:
+
+```bash
+mvn clean package
+```
+
+Para ejectuar la aplicacion usa el siguiente comando:
+
+```bash
+java -jar target/bookinglab.jar
+```
 
 ## Versionado 📌
 
@@ -79,44 +91,58 @@ Diríjase a su navegador de preferencia y vaya a la siguiente dirección: [http:
 
 Se está utilizando el framework de Spring Boot para el desarrollo de la aplicación. Las dependencias utilizadas son:
 
-* ![Java Version](https://img.shields.io/badge/Java-v17.0.9-orange)
+* ![Java Version](https://img.shields.io/badge/Java-v17-orange)
 
     La versión de Java indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Maven Version](https://img.shields.io/badge/Maven-v3.9.5-lightgrey)
+* ![Maven Version](https://img.shields.io/badge/Maven-v3.9.6-lightgrey)
 
     Maven es la herramienta utilizada para la construcción del proyecto. La versión de Maven indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Spring Boot Version](https://img.shields.io/badge/SpringBoot-v3.2.3-green)
+* ![Spring Boot Version](https://img.shields.io/badge/SpringBoot-v3.2.5-green)
 
     Spring Boot es el framework utilizado para el desarrollo de la aplicación. La versión de Spring Boot indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Spring Security Cypto Version](https://img.shields.io/badge/SpringBootSecurity-v6.2.0-blue)
+* ![Spring Security](https://img.shields.io/badge/SpringBootSecurity-v6.2.4-blue)
 
-    Spring Security Crypto es la dependencia utilizada para la encriptación de contraseñas. La versión de Spring Security Crypto indicada es la versión utilizada para el desarrollo de la aplicación.
+    Spring Security es la dependencia utilizada para la seguridad de la aplicación. La versión de Spring Security indicada es la versión utilizada para el desarrollo de la aplicación.
 
 * ![MySQL Conector Version](https://img.shields.io/badge/MySQL-v8.2.0-purple)
 
     MySQL Conector es la dependencia utilizada para la conexión con la base de datos MySQL. La versión de MySQL Conector indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Join Faces Version](https://img.shields.io/badge/JoinFaces-v5.2.2-red)
+* ![Join Faces Version](https://img.shields.io/badge/JoinFaces-v5.2.5-red)
 
     Join Faces es la dependencia utilizada para la integración de PrimeFaces con Spring Boot. La versión de Join Faces indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Prime Faces Version](https://img.shields.io/badge/PrimeFaces-v13.0.4-yellow)
+* ![Prime Faces Version](https://img.shields.io/badge/PrimeFaces-v13.0.8-yellow)
 
     Prime Faces es la dependencia utilizada para la interfaz gráfica de la aplicación. La versión de Prime Faces indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Embedded Tomcat Version](https://img.shields.io/badge/EmbeddedTomcat-v10.1.19-brown)
+* ![Embedded Tomcat Version](https://img.shields.io/badge/EmbeddedTomcat-v10.1.20-brown)
 
     Embedded Tomcat es la dependencia utilizada para el servidor web embebido de la aplicación. La versión de Embedded Tomcat indicada es la versión utilizada para el desarrollo de la aplicación.
 
-* ![Lombok Version](https://img.shields.io/badge/Lombok-v1.18.30-lightblue)
+* ![Lombok Version](https://img.shields.io/badge/Lombok-v1.18.32-lightblue)
 
     Lombok es la dependencia utilizada para la generación de getters, setters, constructores y otros métodos. La versión de Lombok indicada es la versión utilizada para el desarrollo de la aplicación.
 
 > [!TIP]
 > Si se desea utilizar una versión diferente de las dependencias indicadas, se debe cambiar la versión en el archivo `pom.xml` que se encuentra en la raíz del proyecto. Luego de esto se debe compilar el proyecto de nuevo con Maven.
+
+## Diagramas 📊
+
+Los casos de uso de la aplicación son los siguientes:
+
+![Casos de Uso](diagrams/CasosdeUso.png)
+
+El diagrama de conceptos es el siguiente:
+
+![Diagrama de Conceptos](diagrams/Conceptos.png)
+
+El diagrama de despliegue de la aplicación es el siguiente:
+
+![Diagrama de Despligue](diagrams/Despliegue.png)
 
 ## Autores ✒️
 

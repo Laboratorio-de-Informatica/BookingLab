@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Clase que envuelve las funcionalidades de PrimeFaces
+ *
  * @version 1.0
  * @autor Daniel Antonio Santanilla
  */
@@ -19,5 +20,5 @@ public class PrimeFacesWrapper {
     public PrimeRequestContext getRequestContext() {
         return PrimeRequestContext.getCurrentInstance();
     }
-    
+
 }

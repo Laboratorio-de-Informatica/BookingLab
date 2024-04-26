@@ -15,9 +15,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Clase que define la configuración de seguridad de la aplicación
- * @version 1.0
+ *
  * @author Daniel Antonio Santanilla
  * @author Andres Camilo Oniate
+ * @version 1.0
  */
 @Configuration
 @EnableWebSecurity
@@ -33,6 +34,7 @@ public class SecurityConfig {
     /**
      * Configura la seguridad de la aplicación permitiendo el acceso
      * al formulario de login y a los recursos de JSF
+     *
      * @param httpSecurity Configuración de seguridad
      * @return Filtro de seguridad
      * @throws Exception Si ocurre un error al configurar la seguridad
@@ -78,5 +80,5 @@ public class SecurityConfig {
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
 }

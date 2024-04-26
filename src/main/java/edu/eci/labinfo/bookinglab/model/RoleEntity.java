@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 /**
  * Representa un rol en la base de datos
  * @version 1.0
- * @author Daniel Santanillae
+ * @author Daniel Santanilla
  */
 @Entity
 @Data

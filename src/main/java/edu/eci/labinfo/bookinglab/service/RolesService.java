@@ -1,16 +1,16 @@
 package edu.eci.labinfo.bookinglab.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import edu.eci.labinfo.bookinglab.data.RolesRepository;
 import edu.eci.labinfo.bookinglab.model.RoleEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Clase que define los servicios de los roles
- * @version 1.0
+ *
  * @author Daniel Antonio Santanilla
+ * @version 1.0
  */
 @Service
 public class RolesService {
@@ -28,5 +28,5 @@ public class RolesService {
     public void deleteAll() {
         rolesRepository.deleteAll();
     }
-    
+
 }

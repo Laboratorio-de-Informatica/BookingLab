@@ -1,5 +1,13 @@
 package edu.eci.labinfo.bookinglab.controller;
 
+import edu.eci.labinfo.bookinglab.service.ScheduleExportService;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,19 +20,11 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
-
-import edu.eci.labinfo.bookinglab.service.ScheduleExportService;
-
 /**
  * Clase que permite descargar un archivo ZIP con los horarios de la semana
- * @version 1.0
+ *
  * @author Andres Camilo Oniate
+ * @version 1.0
  */
 @Component
 @RequestScope
@@ -32,7 +32,7 @@ public class FileDownload {
 
     private StreamedContent file;
     private final ScheduleExportService scheduleExportService;
-    private Logger logger;
+    private final Logger logger;
 
     public FileDownload(ScheduleExportService scheduleExportService) {
         this.scheduleExportService = scheduleExportService;
@@ -41,15 +41,14 @@ public class FileDownload {
 
     /**
      * Genera un archivo ZIP con los horarios de la semana
+     *
      * @return Archivo ZIP con los horarios de la semana
      */
     public void getZippedFiles() {
         try {
             LocalDate today = LocalDate.now();
             LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            LocalDate endOfWeek = (today.getDayOfWeek() == DayOfWeek.SUNDAY)
-                ? today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY))
-                : today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
+            LocalDate endOfWeek = (today.getDayOfWeek() == DayOfWeek.SUNDAY) ? today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY)) : today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
 
             // Crear un archivo ZIP temporal
             Path zipFilePath = Files.createTempFile("schedules", ".zip");
@@ -81,11 +80,7 @@ public class FileDownload {
 
             // Convertir el archivo ZIP en un StreamedContent para descarga
             FileInputStream zipInputStream = new FileInputStream(zipFilePath.toFile());
-            file = DefaultStreamedContent.builder()
-                    .name("schedules.zip")
-                    .contentType("application/zip")
-                    .stream(() -> zipInputStream)
-                    .build();
+            file = DefaultStreamedContent.builder().name("schedules.zip").contentType("application/zip").stream(() -> zipInputStream).build();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,5 +90,5 @@ public class FileDownload {
         getZippedFiles();
         return file;
     }
-    
+
 }

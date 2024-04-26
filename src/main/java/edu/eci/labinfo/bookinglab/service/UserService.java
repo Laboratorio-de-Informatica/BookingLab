@@ -1,21 +1,21 @@
 package edu.eci.labinfo.bookinglab.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import edu.eci.labinfo.bookinglab.data.UserRepository;
+import edu.eci.labinfo.bookinglab.model.UserEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.eci.labinfo.bookinglab.data.UserRepository;
-import edu.eci.labinfo.bookinglab.model.UserEntity;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Clase que define los servicios de la entidad UserEntity
- * @version 1.0
+ *
  * @author Andres Camilo Oniate
  * @author Daniel Antonio Santanilla
+ * @version 1.0
  */
 @Service
 public class UserService {
@@ -28,9 +28,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     /**
      * Agrega un usuario a la base de datos
+     *
      * @param user Usuario a agregar
      * @return Usuario agregado
      */
@@ -42,6 +42,7 @@ public class UserService {
 
     /**
      * Obtiene un usuario por su nombre de usuario
+     *
      * @param username Nombre de usuario
      * @return Usuario encontrado de lo contrario null
      */
@@ -55,6 +56,7 @@ public class UserService {
 
     /**
      * Obtiene un usuario por su nombre completo
+     *
      * @param fullName Nombre completo del usuario
      * @return Usuario encontrado de lo contrario null
      */
@@ -68,6 +70,7 @@ public class UserService {
 
     /**
      * Obtiene todos los usuarios de la base de datos
+     *
      * @return Lista de usuarios
      */
     public List<UserEntity> getUsers() {
@@ -76,6 +79,7 @@ public class UserService {
 
     /**
      * Actualiza un usuario en la base de datos
+     *
      * @param user Usuario a actualizar
      * @return Usuario actualizado
      */
@@ -89,6 +93,7 @@ public class UserService {
 
     /**
      * Elimina un usuario de la base de datos
+     *
      * @param userName Nombre de usuario
      */
     public void deleteUser(String userName) {

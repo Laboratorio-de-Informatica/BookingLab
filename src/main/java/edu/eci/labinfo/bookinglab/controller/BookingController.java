@@ -1,24 +1,5 @@
 package edu.eci.labinfo.bookinglab.controller;
 
-import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultScheduleEvent;
-import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.ScheduleEvent;
-import org.primefaces.model.ScheduleModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.SessionScope;
-
 import edu.eci.labinfo.bookinglab.model.Booking;
 import edu.eci.labinfo.bookinglab.model.BookingLabException;
 import edu.eci.labinfo.bookinglab.model.Laboratory;
@@ -31,12 +12,27 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import lombok.Data;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
+
+import java.io.IOException;
+import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Clase que controla las reservas
- * @version 1.0
+ *
  * @author Daniel Antonio Santanilla
  * @author Andres Camilo Oniate
+ * @version 1.0
  */
 @Component
 @SessionScope
@@ -62,20 +58,17 @@ public class BookingController {
     private final DurationController durationController;
     private final MailService mailService;
     private final PrimeFacesWrapper primeFacesWrapper;
-    
+
 
     private static final String FORM_MESSAGES = "form:messages";
     private static final String ERROR = "Error";
 
-    public BookingController(BookingService bookingService,
-                             DurationController durationController,
-                             MailService mailService,
-                             PrimeFacesWrapper primeFacesWrapper) {
+    public BookingController(BookingService bookingService, DurationController durationController, MailService mailService, PrimeFacesWrapper primeFacesWrapper) {
         this.bookingService = bookingService;
         this.durationController = durationController;
         this.mailService = mailService;
         this.primeFacesWrapper = primeFacesWrapper;
-        
+
     }
 
     @PostConstruct
@@ -116,22 +109,13 @@ public class BookingController {
 
     /**
      * Coloca una reserva en el calendario
+     *
      * @param booking Reserva a colocar
      */
     private void placeBookingEvent(Booking booking) {
         LocalDateTime startDateTime = LocalDateTime.of(booking.getDate(), booking.getInitialTimeSlot());
         LocalDateTime endDateTime = LocalDateTime.of(booking.getDate(), booking.getFinalTimeSlot());
-        DefaultScheduleEvent<?> bookingEvent = DefaultScheduleEvent.builder()
-                .title(booking.getCourse().toUpperCase() + " - " + booking.getTeacher() + " (" + booking.getLaboratory() + ")")
-                .startDate(startDateTime)
-                .endDate(endDateTime)
-                .description(booking.getObservation())
-                .data(booking)
-                .overlapAllowed(true)
-                .resizable(false)
-                .draggable(false)
-                .backgroundColor(LabColorManager.getInstance().getColor(Laboratory.findByValue(booking.getLaboratory())))
-                .build();
+        DefaultScheduleEvent<?> bookingEvent = DefaultScheduleEvent.builder().title(booking.getCourse().toUpperCase() + " - " + booking.getTeacher() + " (" + booking.getLaboratory() + ")").startDate(startDateTime).endDate(endDateTime).description(booking.getObservation()).data(booking).overlapAllowed(true).resizable(false).draggable(false).backgroundColor(LabColorManager.getInstance().getColor(Laboratory.findByValue(booking.getLaboratory()))).build();
         eventModel.addEvent(bookingEvent);
     }
 
@@ -145,6 +129,7 @@ public class BookingController {
 
     /**
      * Selecciona un evento del calendario
+     *
      * @param selectEvent Evento seleccionado
      */
     public void onEventSelect(SelectEvent<ScheduleEvent<Booking>> selectEvent) {
@@ -155,6 +140,7 @@ public class BookingController {
 
     /**
      * Actualiza una reserva en la base de datos
+     *
      * @return true si la reserva se guarda correctamente, false de lo contrario
      */
     public Boolean onEventUpdate() {
@@ -167,8 +153,7 @@ public class BookingController {
             bookingService.updateReservation(selectedBooking);
             logger.info("Evento {} actualizado", selectedBooking.getBookingId());
         } catch (BookingLabException e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
             primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
             return false;
         }
@@ -177,6 +162,7 @@ public class BookingController {
 
     /**
      * Cancela una reserva
+     *
      * @return true si la reserva se cancela correctamente, false de lo contrario
      */
     public Boolean onEventCancel() {
@@ -186,8 +172,7 @@ public class BookingController {
             bookingService.updateReservation(bookingToCancel);
             logger.info("Evento {} cancelado", bookingToCancel.getBookingId());
         } catch (BookingLabException e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
             primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
             return false;
         }
@@ -196,6 +181,7 @@ public class BookingController {
 
     /**
      * Filtra las reservas por laboratorio
+     *
      * @return true si hay reservas, false de lo contrario
      */
     public Boolean onLaboratorySelect() {
@@ -214,6 +200,7 @@ public class BookingController {
 
     /**
      * Filtra las reservas por profesor
+     *
      * @return true si hay reservas, false de lo contrario
      */
     public Boolean onTeacherSearch() {
@@ -232,6 +219,7 @@ public class BookingController {
 
     /**
      * Filtra las reservas por curso
+     *
      * @return true si hay reservas, false de lo contrario
      */
     public Boolean onCourseSearch() {
@@ -250,6 +238,7 @@ public class BookingController {
 
     /**
      * Elimina una reserva
+     *
      * @return true al eliminar la reserva
      */
     public Boolean onEventDelete() {
@@ -258,14 +247,14 @@ public class BookingController {
         bookingService.deleteReservation(bookingToDelete);
         logger.info("Evento {} eliminado", bookingToDelete.getBookingId());
         eventModel.deleteEvent(event);
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Evento eliminado"));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Evento eliminado"));
         primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
         return true;
     }
 
     /**
      * Guarda una reserva
+     *
      * @return true si guarda la reserva, false de lo contrario
      */
     public Boolean saveReservation() {
@@ -281,19 +270,19 @@ public class BookingController {
                     placeBookingEvent(bookingToSave);
                     toSend.add(bookingToSave);
                 } catch (BookingLabException e) {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ERROR, e.getMessage()));
                     primeFacesWrapper.current().ajax().update(FORM_MESSAGES);
                     return false;
                 }
             }
         }
         if (Boolean.TRUE.equals(sendEmail)) {
-            mailService.sendMail(teacherEmail, toSend);
-            logger.info("Correo enviado a {}", teacherEmail);
-            teacherEmail = "";
-            sendEmail = false;
+            if (mailService.sendMail(teacherEmail, toSend)) {
+                logger.info("Correo enviado a {}", teacherEmail);
+            }
         }
+        sendEmail = false;
+        teacherEmail = "";
 
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         String redirectPath = "index.xhtml";
@@ -312,9 +301,10 @@ public class BookingController {
      * se crearan reservas para la semana 1 y 2
      * Ej. Si las repeticiones por semanas 2 y el numero de duracion es 2,
      * se crearan reservas para la semana 2 y 4
+     *
      * @param repetitions Numero de repeticiones de la reserva
-     * @param i Cantidad de duracion de la reserva
-     * @param day Dia de la semana
+     * @param i           Cantidad de duracion de la reserva
+     * @param day         Dia de la semana
      * @return Reserva a guardar
      */
     private Booking makeBooking(int repetitions, int i, DayOfWeek day) {
@@ -328,7 +318,7 @@ public class BookingController {
         bookingToSave.setCanceled(false);
         bookingToSave.setDay(day);
         bookingToSave.setDate(LocalDate.now().with(day));
-        bookingToSave.setDate(bookingToSave.getDate().plusWeeks(repetitions * i));
+        bookingToSave.setDate(bookingToSave.getDate().plusWeeks((long) repetitions * i));
         return bookingToSave;
     }
 

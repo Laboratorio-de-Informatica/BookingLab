@@ -6,21 +6,21 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
+        <version>3.2.5</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.eci.labinfo</groupId>
     <artifactId>bookinglab</artifactId>
     <version>1.0.0</version>
-    <packaging>war</packaging>
-    <name>bookinglab</name>
+    <packaging>jar</packaging>
 
+    <name>bookinglab</name>
     <description>Proyecto para las reservas del laboratorio de informatica</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-        <joinfaces.version>5.2.2</joinfaces.version>
+        <joinfaces.version>5.2.5</joinfaces.version>
     </properties>
 
     <dependencies>

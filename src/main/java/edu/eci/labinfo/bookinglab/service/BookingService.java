@@ -1,21 +1,21 @@
 package edu.eci.labinfo.bookinglab.service;
 
-import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import edu.eci.labinfo.bookinglab.data.BookingRepository;
 import edu.eci.labinfo.bookinglab.model.Booking;
 import edu.eci.labinfo.bookinglab.model.BookingLabException;
 import edu.eci.labinfo.bookinglab.model.Laboratory;
+import org.springframework.stereotype.Service;
+
+import java.time.DayOfWeek;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Clase que define los servicios de las reservas
- * @version 1.0
+ *
  * @author Daniel Antonio Santanilla
  * @author Andres Camilo Oniate
+ * @version 1.0
  */
 @Service
 public class BookingService {
@@ -28,6 +28,7 @@ public class BookingService {
 
     /**
      * Crea una reserva
+     *
      * @param booking Reserva a crear
      * @return Reserva creada
      * @throws BookingLabException Si la fecha inicial es mayor a la fecha final
@@ -41,6 +42,7 @@ public class BookingService {
 
     /**
      * Formatea el nombre del profesor a mayusculas
+     *
      * @param booking Reserva a formatear
      * @return Reserva con el nombre del profesor en mayusculas
      */
@@ -52,6 +54,7 @@ public class BookingService {
 
     /**
      * Obtiene todas las reservas
+     *
      * @return Todas las reservas
      */
     public List<Booking> getAllReservations() {
@@ -60,6 +63,7 @@ public class BookingService {
 
     /**
      * Obtiene una reserva por su id
+     *
      * @param id Id de la reserva
      * @return Reserva encontrada
      * @throws BookingLabException Si la reserva no es encontrada
@@ -73,6 +77,7 @@ public class BookingService {
 
     /**
      * Obtiene las reservas de un profesor
+     *
      * @param teacher Nombre del profesor
      * @return Reservas del profesor
      */
@@ -82,6 +87,7 @@ public class BookingService {
 
     /**
      * Obtiene las reservas de un laboratorio
+     *
      * @param laboratory Nombre del laboratorio
      * @return Reservas del laboratorio
      */
@@ -91,6 +97,7 @@ public class BookingService {
 
     /**
      * Obtiene las reservas de un curso
+     *
      * @param course Nombre del curso
      * @return Reservas del curso
      */
@@ -100,6 +107,7 @@ public class BookingService {
 
     /**
      * Actualiza una reserva
+     *
      * @param booking Reserva a actualizar
      * @return Reserva actualizada
      * @throws BookingLabException Si la reserva no es encontrada
@@ -114,6 +122,7 @@ public class BookingService {
 
     /**
      * Elimina una reserva
+     *
      * @param booking Reserva a eliminar
      */
     public void deleteReservation(Booking booking) {
@@ -122,6 +131,7 @@ public class BookingService {
 
     /**
      * Obtiene los dias de la semana
+     *
      * @return Dias de la semana
      */
     public DayOfWeek[] getWeekDays() {
@@ -130,6 +140,7 @@ public class BookingService {
 
     /**
      * Obtiene los laboratorios
+     *
      * @return Lista de laboratorios
      */
     public List<String> getLaboratories() {
@@ -138,6 +149,7 @@ public class BookingService {
 
     /**
      * Obtiene las reservas de un dia
+     *
      * @param day Dia de la semana
      * @return Reservas del dia
      */

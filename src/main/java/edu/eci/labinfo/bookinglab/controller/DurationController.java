@@ -1,5 +1,14 @@
 package edu.eci.labinfo.bookinglab.controller;
 
+import edu.eci.labinfo.bookinglab.service.BookingService;
+import jakarta.annotation.PostConstruct;
+import lombok.Data;
+import org.primefaces.PrimeFaces;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -7,20 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.primefaces.PrimeFaces;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.SessionScope;
-
-import edu.eci.labinfo.bookinglab.service.BookingService;
-import jakarta.annotation.PostConstruct;
-import lombok.Data;
-
 /**
  * Clase que controla la duracion de la reserva
- * @version 1.0
+ *
  * @author Daniel Antonio Santanilla
+ * @version 1.0
  */
 @Component
 @SessionScope
@@ -56,6 +56,7 @@ public class DurationController {
 
     /**
      * Nombre del dia de la semana
+     *
      * @param day Dia de la semana
      * @return Cadena con el nombre del dia de la semana
      */
@@ -83,6 +84,7 @@ public class DurationController {
 
     /**
      * Genera el mensaje de resumen para la duracion de la reserva
+     *
      * @return Mensaje de resumen para la duracion de la reserva
      */
     private String generateWeeklyMessage() {

@@ -1,22 +1,23 @@
 package edu.eci.labinfo.bookinglab.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import edu.eci.labinfo.bookinglab.model.Laboratory;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 /**
  * Clase que maneja los colores de los laboratorios
- * @version 1.0
+ *
  * @author Daniel Antonio Santanilla
+ * @version 1.0
  */
 public class LabColorManager {
 
-    private Map<Laboratory, String> labColors;
+    private final Map<Laboratory, String> labColors;
     private static LabColorManager instance;
 
     public LabColorManager() {
-        this.labColors = new HashMap<>();
+        this.labColors = new EnumMap<>(Laboratory.class);
         labColors.put(Laboratory.MULTIMEDIA, "#FFC107");
         labColors.put(Laboratory.SOFTWARE, "#FAB710");
         labColors.put(Laboratory.REDES, "#FD7E14");
@@ -36,11 +37,12 @@ public class LabColorManager {
 
     /**
      * Obtiene el color de un laboratorio
+     *
      * @param lab Laboratorio
      * @return Color del laboratorio
      */
     public String getColor(Laboratory lab) {
         return labColors.get(lab);
     }
-    
+
 }

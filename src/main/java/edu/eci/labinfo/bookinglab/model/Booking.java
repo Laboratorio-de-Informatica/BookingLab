@@ -1,23 +1,20 @@
 package edu.eci.labinfo.bookinglab.model;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 /**
  * Representa una reserva de un laboratorio
- * @version 1.0
+ *
  * @author Daniel Antonio Santanilla
  * @author David Eduardo Valencia
+ * @version 1.0
  */
 @Entity
 @Data
