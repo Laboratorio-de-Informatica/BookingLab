@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.time.temporal.WeekFields;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -31,6 +32,7 @@ public class DurationController {
     private String summaryMessage;
     private DayOfWeek[] days;
     private List<DayOfWeek> selectedDays;
+    private List<LocalDate> range;
     private int repetitions;
     private int duration;
     private Locale colombianLocale;
@@ -71,6 +73,14 @@ public class DurationController {
         ensureAtLeastOneDaySelected();
         summaryMessage = generateWeeklyMessage();
         PrimeFaces.current().ajax().update("form:selectDaysButton");
+    }
+
+    public void updateDuration() {
+        LocalDate startDate = range.get(0);
+        LocalDate endDate = range.get(range.size() - 1);
+        WeekFields iso = WeekFields.ISO;
+        duration = endDate.get(iso.weekOfYear()) - startDate.get(iso.weekOfYear()) + 1;
+        logger.info("duracion {}", duration);
     }
 
     /**
